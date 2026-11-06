@@ -44,4 +44,4 @@ js/views/*.js       ← un fichier par écran
 
 ---
 
-**Je Bade** · une app **ORIVERSE** · Créée par **Jean Emmanuel Ahossi**
+**Je Bade** · une app **ORIVERSE** · Créée par **Jean Emmanuel Ahossi** — [portfolio](https://jeanemmanuel-portfolio-gamma.vercel.app/)

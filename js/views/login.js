@@ -7,7 +7,8 @@ export function loginView(root, { go }) {
     <section class="login-brand">
       <div class="brand">${logo(40, '#fff')}<span>je bade <em>admin</em></span></div>
       <div><h1>Le back-office<br/>de Je Bade.</h1><p>Modération, utilisateurs, badges, données personnelles et réglages de la plateforme. Chaque action est inscrite au journal d'audit.</p></div>
-      <p class="small">${icon('lock')} Accès réservé à l'équipe Je Bade</p>
+      <div class="login-foot"><p class="small">${icon('lock')} Accès réservé à l'équipe Je Bade</p>
+        <p class="small credit">Je Bade · une app ORIVERSE · Créée par <a href="https://jeanemmanuel-portfolio-gamma.vercel.app/" target="_blank" rel="noopener">Jean Emmanuel Ahossi</a></p></div>
     </section>
     <section class="login-form">
       <form data-form novalidate>
