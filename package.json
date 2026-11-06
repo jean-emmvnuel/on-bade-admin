@@ -5,9 +5,13 @@
   "description": "On Bade — back-office. Pas de build : servi tel quel ; ce fichier ne sert qu'aux tests.",
   "scripts": {
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:report": "playwright show-report e2e-report",
+    "test:all": "vitest run && playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.0",
     "jsdom": "^25.0.1",
     "vitest": "^2.1.8"
   }

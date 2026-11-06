@@ -61,3 +61,25 @@ npm test
 | --- | --- |
 | `tests/store.test.js` | Connexion, badge vérifié réservé à l’administrateur (modérateurs en lecture seule), conditions du badge (actif + 1 000 rires, anonymes exclus, seuils réglables), sanctions, suppression de compte, masquage/révélation d’auteur, signalements, stickers retirés, mots interdits, règles, annonces, données personnelles, journal d’audit |
 | `tests/migrations.test.js` | Passage aux nouvelles règles du badge et session gardée après rechargement |
+
+### Tests de bout en bout (Playwright)
+
+Un vrai navigateur ouvre le back-office et clique dans les pages, sur ordinateur et sur téléphone (Pixel 7).
+
+```bash
+npx playwright install chromium   # une seule fois
+npm run test:e2e                  # 43 tests
+npm run test:e2e:report           # rapport détaillé (captures en cas d’échec)
+npm run test:all                  # unitaires + bout en bout
+```
+
+| Fichier | Ce qui est vérifié |
+| --- | --- |
+| `e2e/auth.spec.js` | Mauvais mot de passe refusé, pages protégées, connexion, déconnexion, session gardée au rechargement |
+| `e2e/navigation.spec.js` | Les 12 pages s’ouvrent sans erreur, menu latéral, recherche globale, menu sur téléphone |
+| `e2e/moderation.spec.js` | Classer des signalements, masquer/rétablir un bading, filtre « avec image », retirer/rétablir un sticker, mots interdits, journal d’audit |
+| `e2e/users.spec.js` | Recherche, suspension puis levée, badge : accepter une demande, attribuer à un éligible, modérateur en lecture seule |
+| `e2e/platform.spec.js` | Règles enregistrées et gardées, annonce, copie des données, mode maintenance, Échap, pas de débordement sur téléphone |
+
+Chaque test échoue aussi si la page lève une erreur JavaScript.
+

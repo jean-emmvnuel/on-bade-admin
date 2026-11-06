@@ -3,3 +3,6 @@
 .claude/settings.local.json
 node_modules/
 coverage/
+test-results/
+e2e-report/
+playwright/.cache/
