@@ -379,3 +379,20 @@ legend { margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; 
 .sticker-prev { display: grid; place-items: center; padding: 14px 0 6px; }
 .sticker-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .sticker-card footer { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); }
+
+/* ═════════════ Apple Design (skill apple-design) ═════════════ */
+/* Réponse dès l'appui, sans flash ni délai. */
+html { -webkit-tap-highlight-color: transparent; }
+a, button, [role="button"], label { touch-action: manipulation; }
+.icon-btn, .chip, .tabs a, .seg button, .nav a { transition: transform 100ms ease-out, background-color 150ms, color 150ms; }
+.icon-btn:active, .chip:active, .seg button:active { transform: scale(0.94); }
+.nav a:active, .tabs a:active { transform: scale(0.98); }
+/* Matière : barre du haut translucide avec un bord lumineux plutôt qu'un trait gris. */
+.topbar { background: rgba(26, 25, 25, 0.72); backdrop-filter: blur(20px) saturate(170%); -webkit-backdrop-filter: blur(20px) saturate(170%); border-bottom-color: rgba(255, 255, 255, 0.06); }
+/* Typographie : petit texte légèrement ouvert, gros chiffres serrés. */
+.small, .muted.small, td small { letter-spacing: 0.01em; }
+.kpi b { letter-spacing: -0.03em; }
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; } }
+@media (prefers-reduced-transparency: reduce) { .topbar, .phone-notif { background: var(--bg) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; } }
+@media (prefers-contrast: more) { .topbar, .side, .card, .modal, th, td { border-color: var(--text-3) !important; } .muted, .small { color: var(--text-2) !important; } }
