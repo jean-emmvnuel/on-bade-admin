@@ -17,7 +17,7 @@ export function announcementsView(root, { go }) {
       </form>
       <div class="card" data-enter>
         <div class="card-head"><h2>Aperçu sur le téléphone</h2></div>
-        <div class="phone-notif"><span class="app">${logo(20)} JE BADE · maintenant</span><b data-pt>Titre de l’annonce</b><p data-pb>Le message apparaît ici.</p></div>
+        <div class="phone-notif"><span class="app">${logo(20)} ON BADE · maintenant</span><b data-pt>Titre de l’annonce</b><p data-pb>Le message apparaît ici.</p></div>
       </div>
     </div>
     <section class="card" data-enter><div class="card-head"><h2>Envoyées</h2></div>

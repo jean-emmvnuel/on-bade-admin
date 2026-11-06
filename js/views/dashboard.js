@@ -41,7 +41,7 @@ export function dashboardView(root) {
   const overdue = S.pendingData().filter((d) => now - d.createdAt > st.rules.deletionDays * D).length;
 
   root.innerHTML = `
-    ${pageHead(`Bonjour, ${esc(S.me().pseudo)} 👋`, `Voici l'état de Je Bade au ${new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}.`)}
+    ${pageHead(`Bonjour, ${esc(S.me().pseudo)} 👋`, `Voici l'état de On Bade au ${new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}.`)}
     ${overdue ? `<div class="alert bad" data-enter>${icon('alert')}<span><b>${overdue} demande${overdue > 1 ? 's' : ''} de données personnelles dépasse${overdue > 1 ? 'nt' : ''} le délai de ${st.rules.deletionDays} jours.</b> La loi impose de les traiter. <a href="#/data">Traiter maintenant</a></span></div>` : ''}
     <section class="kpis">${kpis.map((k) => `
       <a class="kpi card" href="#${k.href}" data-enter>

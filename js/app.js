@@ -71,7 +71,7 @@ function shell() {
   return `
   <div class="shell">
     <aside class="side" aria-label="Navigation">
-      <a class="brand" href="#/">${logo(30)}<span>je bade <em>admin</em></span></a>
+      <a class="brand" href="#/">${logo(30)}<span>on bade <em>admin</em></span></a>
       <nav>${NAV.map(([group, items]) => `<p class="nav-group">${group}</p>${items.map(([k, href, ic, label]) => `<a class="nav" data-nav="${k}" href="#${href}">${icon(ic)}<span>${label}</span><b class="count" data-count="${k}" hidden></b></a>`).join('')}`).join('')}</nav>
       <div class="side-foot"><span class="dot-live"></span>Plateforme <b data-live>en ligne</b></div>
     </aside>

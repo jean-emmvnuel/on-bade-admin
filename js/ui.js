@@ -7,7 +7,7 @@ export const esc = (s = '') => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&am
 export const icon = (name, cls = '') => `<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name] ?? ''}</svg>`;
 
 const LOGO = '<path d="M40 46a22 22 0 0 1 44 0V214a22 22 0 0 1-44 0Z"/><path fill-rule="evenodd" d="M68 158A78 78 0 1 0 224 158A78 78 0 1 0 68 158Z M104 146H188A42 42 0 0 1 104 146Z"/>';
-export const logo = (size = 28, color = '#9810e6') => `<svg viewBox="0 0 256 256" width="${size}" height="${size}" fill="${color}" role="img" aria-label="Je Bade">${LOGO}</svg>`;
+export const logo = (size = 28, color = '#9810e6') => `<svg viewBox="0 0 256 256" width="${size}" height="${size}" fill="${color}" role="img" aria-label="On Bade">${LOGO}</svg>`;
 export const verified = () => `<svg class="verified" viewBox="0 0 24 24" aria-label="Compte vérifié"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" fill="#9810e6"/><path d="m16 9-5.5 5.5L8 12" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 export function avatar(u, size = 36) {

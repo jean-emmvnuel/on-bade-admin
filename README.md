@@ -1,6 +1,6 @@
-# Je Bade — Administration
+# On Bade — Administration
 
-Le back-office de **Je Bade**, écrit en **HTML, CSS et JavaScript natif**, animé avec **GSAP**. Même identité que l'app et le site.
+Le back-office de **On Bade**, écrit en **HTML, CSS et JavaScript natif**, animé avec **GSAP**. Même identité que l'app et le site.
 
 L'administrateur a **tous les accès** ; chaque action est inscrite au **journal d'audit**.
 
@@ -44,4 +44,4 @@ js/views/*.js       ← un fichier par écran
 
 ---
 
-**Je Bade** · une app **ORIVERSE** · Créée par **Jean Emmanuel Ahossi** — [portfolio](https://jeanemmanuel-portfolio-gamma.vercel.app/)
+**On Bade** · une app **ORIVERSE** · Créée par **Jean Emmanuel Ahossi** — [portfolio](https://jeanemmanuel-portfolio-gamma.vercel.app/)
