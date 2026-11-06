@@ -1,6 +1,7 @@
 import * as S from '../store.js';
 import { $, enter, esc, icon, pageHead, statusPill, table, userCell, avatar } from '../ui.js';
 import { badingAction, badingMenu, commentAction, revealDialog } from '../actions.js';
+import { stickerHtml } from '../stickers.js';
 
 const PAGE = 15;
 
@@ -10,7 +11,7 @@ export function badingsView(root, { query, go }) {
   const st = S.get();
   let list = st.badings.filter((b) =>
     (f.status === 'all' || b.status === f.status) &&
-    (f.kind === 'all' || (f.kind === 'anon' ? b.anonymous : f.kind === 'reported' ? b.reportsCount > 0 || S.reportsOn('bading', b.id).length : !b.anonymous)) &&
+    (f.kind === 'all' || (f.kind === 'image' ? !!b.image : f.kind === 'anon' ? b.anonymous : f.kind === 'reported' ? b.reportsCount > 0 || S.reportsOn('bading', b.id).length : !b.anonymous)) &&
     (!f.q || b.text.toLowerCase().includes(f.q.toLowerCase()) || b.id === f.q || S.user(b.authorId)?.pseudo.toLowerCase().includes(f.q.toLowerCase())));
   list.sort(f.sort === 'likes' ? (a, b) => b.likes - a.likes : f.sort === 'reports' ? (a, b) => S.reportsOn('bading', b.id).length - S.reportsOn('bading', a.id).length : (a, b) => b.createdAt - a.createdAt);
   const pages = Math.max(1, Math.ceil(list.length / PAGE));
@@ -23,13 +24,13 @@ export function badingsView(root, { query, go }) {
     <div class="toolbar card" data-enter>
       <div class="search-inline">${icon('search')}<input data-q type="search" placeholder="Texte, pseudo ou identifiant…" value="${esc(f.q)}"/></div>
       <select data-f="status" aria-label="Statut">${[['all', 'Tous les statuts'], ['visible', 'Visibles'], ['hidden', 'Masqués'], ['deleted', 'Supprimés']].map(([v, l]) => `<option value="${v}" ${f.status === v ? 'selected' : ''}>${l} (${counts[v]})</option>`).join('')}</select>
-      <select data-f="kind" aria-label="Type">${[['all', 'Signés et anonymes'], ['signed', 'Signés'], ['anon', 'Anonymes'], ['reported', 'Signalés']].map(([v, l]) => `<option value="${v}" ${f.kind === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
+      <select data-f="kind" aria-label="Type">${[['all', 'Tous les types'], ['signed', 'Signés'], ['anon', 'Anonymes'], ['image', 'Avec image'], ['reported', 'Signalés']].map(([v, l]) => `<option value="${v}" ${f.kind === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
       <select data-f="sort" aria-label="Tri">${[['recent', 'Plus récents'], ['likes', 'Plus de rires'], ['reports', 'Plus signalés']].map(([v, l]) => `<option value="${v}" ${f.sort === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
     </div>
     <div data-enter>${table(['Bading', 'Auteur', 'Réactions', 'Signal.', 'Statut', 'Publié', ''], rows.map((b) => {
       const u = S.user(b.authorId), rep = S.reportsOn('bading', b.id).length;
       return `<tr data-id="${b.id}" class="clickable">
-        <td class="text-cell"><span class="clamp">${esc(b.text)}</span></td>
+        <td class="text-cell"><span class="with-thumb">${b.image ? `<img class="thumb" src="${b.image.src}" alt="Image du bading"/>` : ''}<span class="clamp">${b.text ? esc(b.text) : '<em class="muted">Image sans légende</em>'}</span></span></td>
         <td>${b.anonymous ? `<span class="who">${avatar(null, 32)}<span><b>Anonyme</b><small>${icon('lock')} coffre</small></span></span>` : userCell(u)}</td>
         <td class="num">😂 ${S.compact(b.likes)}<small>${b.rebades} rebades · ${b.shares} partages</small></td>
         <td class="num">${rep ? `<span class="flag-n">${icon('flag')} ${rep}</span>` : '—'}</td>
@@ -69,12 +70,13 @@ export function badingDetailView(root, { params, go }) {
       <div>
         <article class="card bading-card" data-enter>
           <div class="who-row">${b.anonymous ? `${avatar(null, 44)}<div><b>Badeur anonyme</b><small>${icon('lock')} Auteur protégé par le coffre d’anonymat</small></div>` : `${avatar(u, 44)}<div><b><a href="#/users/${u.id}">@${esc(u.pseudo)}</a></b><small>${esc(u.email)}</small></div>`}</div>
-          <p class="story">${esc(b.text)}</p>
+          ${b.text ? `<p class="story">${esc(b.text)}</p>` : ''}
+          ${b.image ? `<figure class="detail-img" style="aspect-ratio:${b.image.width}/${b.image.height}"><img src="${b.image.src}" alt="Image du bading"/><figcaption>${b.image.width === b.image.height ? 'Carré 1:1' : 'Portrait 4:5'} · ${b.image.width}×${b.image.height}</figcaption></figure>` : ''}
           ${b.hiddenReason ? `<p class="alert warn">${icon('eyeOff')} ${esc(b.hiddenReason)}</p>` : ''}
           <div class="stats-row"><span><b>${S.fmt(b.likes)}</b> rires</span><span><b>${b.rebades}</b> rebades</span><span><b>${b.shares}</b> partages</span><span><b>${comments.length}</b> commentaires</span></div>
         </article>
         <section class="card" data-enter><div class="card-head"><h2>Commentaires (${comments.length})</h2></div>
-          ${comments.length ? `<ul class="comment-list">${comments.map((c) => `<li class="${c.status === 'deleted' ? 'is-deleted' : ''}">${avatar(S.user(c.authorId), 32)}<div><b><a href="#/users/${c.authorId}">@${esc(S.user(c.authorId)?.pseudo)}</a></b> <small>${S.timeAgo(c.createdAt)} · 😂 ${c.likes}</small>${c.status === 'deleted' ? ' ' + statusPill('deleted') : ''}<p>${esc(c.text)}</p></div>
+          ${comments.length ? `<ul class="comment-list">${comments.map((c) => `<li class="${c.status === 'deleted' ? 'is-deleted' : ''}">${avatar(S.user(c.authorId), 32)}<div><b><a href="#/users/${c.authorId}">@${esc(S.user(c.authorId)?.pseudo)}</a></b> <small>${S.timeAgo(c.createdAt)} · 😂 ${c.likes}</small>${c.status === 'deleted' ? ' ' + statusPill('deleted') : ''}${c.sticker ? `<div class="c-stk">${stickerHtml(c.sticker, 84)}</div>` : `<p>${esc(c.text)}</p>`}</div>
             <button class="btn btn-ghost btn-sm" data-c="${c.id}" data-k="${c.status === 'deleted' ? 'restore' : 'delete'}">${c.status === 'deleted' ? 'Rétablir' : 'Supprimer'}</button></li>`).join('')}</ul>` : '<p class="muted">Aucun commentaire.</p>'}
         </section>
       </div>

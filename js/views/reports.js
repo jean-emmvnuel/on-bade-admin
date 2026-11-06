@@ -10,8 +10,8 @@ export function reportsView(root, { query, go }) {
   const groups = Object.values(list.reduce((acc, r) => { const k = `${r.targetType}:${r.targetId}`; (acc[k] ||= { type: r.targetType, id: r.targetId, reports: [] }).reports.push(r); return acc; }, {}))
     .sort((a, b) => b.reports.length - a.reports.length || Math.max(...b.reports.map((r) => r.createdAt)) - Math.max(...a.reports.map((r) => r.createdAt)));
 
-  const authorOf = (g) => (g.type === 'bading' ? S.bading(g.id)?.authorId : g.type === 'comment' ? S.comment(g.id)?.authorId : g.id);
-  const contentStatus = (g) => (g.type === 'bading' ? S.bading(g.id)?.status : g.type === 'comment' ? S.comment(g.id)?.status : S.user(g.id)?.status);
+  const authorOf = (g) => (g.type === 'bading' ? S.bading(g.id)?.authorId : g.type === 'comment' ? S.comment(g.id)?.authorId : g.type === 'sticker' ? S.customSticker(g.id)?.ownerId : g.id);
+  const contentStatus = (g) => (g.type === 'bading' ? S.bading(g.id)?.status : g.type === 'comment' ? S.comment(g.id)?.status : g.type === 'sticker' ? (S.customSticker(g.id)?.status === 'removed' ? 'deleted' : 'visible') : S.user(g.id)?.status);
 
   root.innerHTML = `
     ${pageHead('Signalements', `Masquage automatique dès ${st.rules.autoHideThreshold} signalements sur un même contenu. Chaque décision est journalisée.`)}
@@ -24,7 +24,7 @@ export function reportsView(root, { query, go }) {
       return `<article class="card report" data-enter data-key="${g.type}:${g.id}">
         <header class="report-head">
           <span class="report-count ${g.reports.length >= st.rules.autoHideThreshold ? 'hot' : ''}">${icon('flag')} ${g.reports.length}</span>
-          <span>${{ bading: 'Bading', comment: 'Commentaire', user: 'Compte' }[g.type]} ${contentStatus(g) ? statusPill(contentStatus(g)) : ''}</span>
+          <span>${{ bading: 'Bading', comment: 'Commentaire', user: 'Compte', sticker: 'Sticker personnel' }[g.type]} ${contentStatus(g) ? statusPill(contentStatus(g)) : ''}</span>
           <span class="spacer"></span>
           ${author && g.type !== 'user' ? `<span class="muted small">Auteur : <a href="#/users/${author.id}">@${esc(author.pseudo)}</a>${S.bading(g.id)?.anonymous ? ' (anonyme, visible admin)' : ''} · ${author.sanctions.length} sanction(s)</span>` : ''}
         </header>
@@ -33,7 +33,8 @@ export function reportsView(root, { query, go }) {
         ${open.length ? `<footer class="report-actions">
           <button class="btn btn-ghost btn-sm" data-act="dismiss">${icon('check')} Classer sans suite</button>
           ${g.type === 'bading' ? (contentStatus(g) === 'hidden' ? `<button class="btn btn-secondary btn-sm" data-act="keep">${icon('eyeOff')} Garder masqué</button>` : `<button class="btn btn-secondary btn-sm" data-act="hide">${icon('eyeOff')} Masquer</button>`) : ''}
-          ${g.type !== 'user' && contentStatus(g) !== 'deleted' ? `<button class="btn btn-secondary btn-sm" data-act="delete">${icon('trash')} Supprimer le contenu</button>` : ''}
+          ${g.type === 'sticker' && contentStatus(g) !== 'deleted' ? `<button class="btn btn-secondary btn-sm" data-act="unsticker">${icon('trash')} Retirer le sticker partout</button>` : ''}
+          ${['bading', 'comment'].includes(g.type) && contentStatus(g) !== 'deleted' ? `<button class="btn btn-secondary btn-sm" data-act="delete">${icon('trash')} Supprimer le contenu</button>` : ''}
           <button class="btn btn-danger btn-sm" data-act="sanction">${icon('ban')} Sanctionner ${g.type === 'user' ? 'le compte' : 'l’auteur'}</button>
         </footer>` : ''}
       </article>`;
@@ -51,10 +52,15 @@ export function reportsView(root, { query, go }) {
         if (type === 'bading' && S.bading(id)?.status === 'hidden') S.setBadingStatus(id, 'visible', 'Rétabli après examen');
         S.resolveReports(ids, 'dismissed', why); toast('Signalement classé'); return go(`/reports?tab=${tab}`);
       }
+      if (act === 'unsticker') {
+        const why = await confirmAction({ title: 'Retirer ce sticker partout', text: 'Il quitte toutes les collections et s’affiche « Sticker retiré par la modération » dans les commentaires.', confirm: 'Retirer', danger: true, reason: true, presets: ['Personne réelle exposée', 'Contenu choquant', 'Haine ou discrimination'] });
+        if (!why) return;
+        S.setStickerStatus(id, 'removed', why); S.resolveReports(ids, 'actioned', `Sticker retiré : ${why}`); toast('Sticker retiré'); return go(`/reports?tab=${tab}`);
+      }
       if (act === 'sanction') {
-        const uid = type === 'user' ? id : type === 'bading' ? S.bading(id).authorId : S.comment(id).authorId;
+        const uid = type === 'user' ? id : type === 'bading' ? S.bading(id).authorId : type === 'sticker' ? S.customSticker(id).ownerId : S.comment(id).authorId;
         const lvl = await sanctionDialog(uid);
-        if (lvl) { S.resolveReports(ids, 'actioned', `Auteur sanctionné : ${S.SANCTIONS[lvl]}`); if (lvl >= 1 && type === 'bading') S.setBadingStatus(id, 'deleted', 'Supprimé avec la sanction'); if (type === 'comment') S.setCommentStatus(id, 'deleted', 'Supprimé avec la sanction'); }
+        if (lvl) { S.resolveReports(ids, 'actioned', `Auteur sanctionné : ${S.SANCTIONS[lvl]}`); if (lvl >= 1 && type === 'bading') S.setBadingStatus(id, 'deleted', 'Supprimé avec la sanction'); if (type === 'comment') S.setCommentStatus(id, 'deleted', 'Supprimé avec la sanction'); if (type === 'sticker') S.setStickerStatus(id, 'removed', 'Retiré avec la sanction'); }
         return go(`/reports?tab=${tab}`);
       }
       if (act === 'keep') {

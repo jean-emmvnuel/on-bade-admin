@@ -5,6 +5,7 @@ import { dashboardView } from './views/dashboard.js';
 import { reportsView } from './views/reports.js';
 import { badingsView, badingDetailView } from './views/badings.js';
 import { commentsView } from './views/comments.js';
+import { stickersView } from './views/stickers.js';
 import { usersView, userDetailView } from './views/users.js';
 import { badgesView } from './views/badges.js';
 import { dataView } from './views/data.js';
@@ -20,6 +21,7 @@ const routes = [
   { path: /^\/badings$/, view: badingsView, nav: 'badings' },
   { path: /^\/badings\/([\w-]+)$/, view: badingDetailView, nav: 'badings', keys: ['id'] },
   { path: /^\/comments$/, view: commentsView, nav: 'comments' },
+  { path: /^\/stickers$/, view: stickersView, nav: 'stickers' },
   { path: /^\/users$/, view: usersView, nav: 'users' },
   { path: /^\/users\/([\w-]+)$/, view: userDetailView, nav: 'users', keys: ['id'] },
   { path: /^\/badges$/, view: badgesView, nav: 'badges' },
@@ -32,7 +34,7 @@ const routes = [
 
 const NAV = [
   ['Vue d’ensemble', [['dashboard', '/', 'dashboard', 'Tableau de bord']]],
-  ['Modération', [['reports', '/reports', 'flag', 'Signalements', () => S.openReports().length], ['badings', '/badings', 'quote', 'Badings'], ['comments', '/comments', 'message', 'Commentaires'], ['moderation', '/moderation', 'shield', 'Mots interdits & règles']]],
+  ['Modération', [['reports', '/reports', 'flag', 'Signalements', () => S.openReports().length], ['badings', '/badings', 'quote', 'Badings'], ['comments', '/comments', 'message', 'Commentaires'], ['stickers', '/stickers', 'sticker', 'Stickers', () => S.get().reports.filter((r) => r.targetType === 'sticker' && r.status === 'open').length], ['moderation', '/moderation', 'shield', 'Mots interdits & règles']]],
   ['Communauté', [['users', '/users', 'users', 'Utilisateurs'], ['badges', '/badges', 'badgeCheck', 'Badges vérifiés', () => S.pendingBadges().length], ['announcements', '/announcements', 'megaphone', 'Annonces']]],
   ['Conformité', [['data', '/data', 'database', 'Données personnelles', () => S.pendingData().length], ['audit', '/audit', 'fileText', 'Journal d’audit']]],
   ['Plateforme', [['settings', '/settings', 'sliders', 'Paramètres']]],

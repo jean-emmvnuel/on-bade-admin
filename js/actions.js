@@ -1,6 +1,7 @@
 // Actions d'administration partagées entre les écrans (menus, confirmations, motifs).
 import * as S from './store.js';
 import { $, confirmAction, esc, menu, modal, closeModal, toast, icon, userCell } from './ui.js';
+import { stickerHtml } from './stickers.js';
 
 const refresh = () => window.dispatchEvent(new HashChangeEvent('hashchange'));
 
@@ -137,7 +138,8 @@ export async function userAction(k, u) {
 }
 
 export const targetPreview = (type, id) => {
-  if (type === 'bading') { const b = S.bading(id); return b ? `<a class="preview" href="#/badings/${b.id}"><small>${icon('quote')} Bading ${b.id} · ${b.anonymous ? 'Badeur anonyme' : '@' + esc(S.user(b.authorId)?.pseudo)} · ${S.timeAgo(b.createdAt)}</small><span>${esc(b.text)}</span></a>` : '<em>Bading introuvable</em>'; }
-  if (type === 'comment') { const c = S.comment(id); return c ? `<a class="preview" href="#/badings/${c.badingId}"><small>${icon('message')} Commentaire de @${esc(S.user(c.authorId)?.pseudo)} · ${S.timeAgo(c.createdAt)}</small><span>${esc(c.text)}</span></a>` : '<em>Commentaire introuvable</em>'; }
+  if (type === 'bading') { const b = S.bading(id); return b ? `<a class="preview" href="#/badings/${b.id}"><small>${icon('quote')} Bading ${b.id} · ${b.anonymous ? 'Badeur anonyme' : '@' + esc(S.user(b.authorId)?.pseudo)} · ${S.timeAgo(b.createdAt)}</small>${b.text ? `<span>${esc(b.text)}</span>` : ''}${b.image ? `<img class="preview-img" src="${b.image.src}" alt="Image du bading"/>` : ''}</a>` : '<em>Bading introuvable</em>'; }
+  if (type === 'comment') { const c = S.comment(id); return c ? `<a class="preview" href="#/badings/${c.badingId}"><small>${icon('message')} Commentaire de @${esc(S.user(c.authorId)?.pseudo)} · ${S.timeAgo(c.createdAt)}</small>${c.sticker ? stickerHtml(c.sticker, 90) : `<span>${esc(c.text)}</span>`}</a>` : '<em>Commentaire introuvable</em>'; }
+  if (type === 'sticker') { const x = S.customSticker(id); return x ? `<a class="preview" href="#/stickers"><small>${icon('sticker')} Sticker personnel « ${esc(x.label ?? id)} » · créé par @${esc(S.user(x.ownerId)?.pseudo)} · utilisé ${S.stickerUses(id)} fois</small>${stickerHtml(id, 110)}</a>` : '<em>Sticker introuvable</em>'; }
   const u = S.user(id); return u ? `<a class="preview" href="#/users/${u.id}">${userCell(u, esc(u.email))}</a>` : '<em>Compte introuvable</em>';
 };

@@ -10,8 +10,9 @@ L'administrateur a **tous les accès** ; chaque action est inscrite au **journal
 |---|---|
 | Tableau de bord | Utilisateurs, actifs, badings, rires (avec l'évolution sur 7 jours), tâches en attente, courbe sur 30 jours, motifs de signalement, badings les plus drôles, dernières actions de l'équipe |
 | Signalements | File regroupée par contenu : classer sans suite, masquer, garder masqué, supprimer, sanctionner l'auteur |
-| Badings | Recherche, filtres (statut, signés/anonymes/signalés), tri, détail avec commentaires, signalements et historique ; masquer, rétablir, supprimer, **révéler l'auteur anonyme** (motif obligatoire, journalisé) |
-| Commentaires | Recherche, suppression, rétablissement, sanction de l'auteur |
+| Badings | Recherche, filtres (statut, signés/anonymes/avec image/signalés), vignettes des images, tri, détail avec commentaires, signalements et historique ; masquer, rétablir, supprimer, **révéler l'auteur anonyme** (motif obligatoire, journalisé) |
+| Commentaires | Recherche, filtre stickers, suppression, rétablissement, sanction de l'auteur |
+| Stickers | Stickers créés par les Badeurs (utilisations, enregistrements, signalements) : retirer partout, rétablir, sanctionner ; bibliothèque des 16 stickers On Bade |
 | Utilisateurs | Recherche par pseudo ou e-mail, filtres, fiche complète ; sanctions (avertissement, suspension 7 jours, bannissement), lever une sanction, badge, rôle, pseudo, lien de mot de passe, suppression du compte |
 | Badges vérifiés | Demandes avec vérification des critères, acceptation ou refus motivé |
 | Annonces | Notification à tous, aux comptes vérifiés ou aux inactifs, avec aperçu |
@@ -39,6 +40,7 @@ js/app.js           ← routeur (hash), barre latérale, recherche globale
 js/store.js         ← données de démo + actions d'administration (→ API plus tard) + journal d'audit
 js/actions.js       ← actions partagées : sanctions, levée d'anonymat, menus
 js/ui.js            ← icônes, fenêtres, confirmations avec motif, graphiques SVG, animations GSAP
+js/stickers.js      ← bibliothèque de stickers (copie de celle du site et de l'app)
 js/views/*.js       ← un fichier par écran
 ```
 

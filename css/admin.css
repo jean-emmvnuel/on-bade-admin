@@ -352,3 +352,30 @@ legend { margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; 
 @media (max-width: 560px) { .kpis, .todo { grid-template-columns: minmax(0, 1fr); } h1 { font-size: 24px; } .bar-row { grid-template-columns: 110px 1fr 30px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
 .card > .btn { align-self: flex-start; }
+
+/* ───────────── Images et stickers (V1 : F1, F8) ───────────── */
+.stk { --w: 120px; width: var(--w); min-height: calc(var(--w) * 0.78); display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--w) * 0.03); padding: calc(var(--w) * 0.08); border-radius: calc(var(--w) * 0.2); background: var(--sbg); color: var(--sfg); box-shadow: 0 0 0 calc(var(--w) * 0.035) #fff, 0 6px 18px rgba(0, 0, 0, 0.35); transform: rotate(var(--rot)); text-align: center; line-height: 1; flex: none; }
+.stk-e { font-size: calc(var(--w) * 0.36); line-height: 1; }
+.stk-t { font-family: var(--font-display); font-weight: 800; font-size: calc(var(--w) * 0.14); line-height: 1.05; }
+.stk-img { padding: 0; min-height: 0; height: var(--w); background: var(--surface-2); overflow: hidden; transform: none; }
+.stk-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.stk-removed { min-height: calc(var(--w) * 0.6); background: none; box-shadow: inset 0 0 0 1px var(--line); color: var(--text-3); font-size: 12px; transform: none; padding: 8px; }
+.c-stk { padding: 8px 4px 6px; }
+.c-stk.small { display: inline-block; padding: 6px 4px; }
+.with-thumb { display: flex; align-items: center; gap: 12px; }
+.thumb { width: 44px; height: 55px; object-fit: cover; border-radius: 8px; flex: none; border: 1px solid var(--line); }
+.detail-img { position: relative; margin: 0; border-radius: var(--r-md); overflow: hidden; background: var(--surface-2); max-height: 640px; max-width: 520px; }
+.detail-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.detail-img figcaption { position: absolute; left: 10px; bottom: 10px; background: rgba(26, 25, 25, 0.85); color: var(--text-2); font-size: 12px; font-weight: 600; padding: 4px 8px; border-radius: 6px; }
+.preview-img { width: 140px; max-height: 175px; object-fit: cover; border-radius: 10px; }
+.preview .stk { margin: 8px 6px; }
+.sticker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.sticker-grid.builtin { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.sticker-grid figure { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 20px 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); margin: 0; }
+.sticker-grid figcaption { display: flex; flex-direction: column; align-items: center; font-weight: 600; font-size: 14px; }
+.sticker-grid figcaption small { color: var(--text-3); font-weight: 500; font-size: 12px; }
+.sticker-card { gap: 12px; }
+.sticker-card.flagged { border-color: rgba(255, 90, 95, 0.5); }
+.sticker-prev { display: grid; place-items: center; padding: 14px 0 6px; }
+.sticker-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sticker-card footer { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); }

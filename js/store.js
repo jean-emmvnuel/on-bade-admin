@@ -50,6 +50,22 @@ const BAD_TEXTS = [
 ];
 const COMMENTS = ['😂😂😂 je suis mort', 'Le « moi aussi » de papa là 💀', 'Ça c\'est la Côte d\'Ivoire', 'On veut la suite !', 'Je me suis reconnu', 'Tu m\'as tuée 😭', 'Pardon c\'est trop vrai', 'Mon gbaka du matin exactement', 'La maman là a raison', 'Hahaha le meilleur bading de la semaine'];
 
+
+// Illustrations de démo pour les badings en image (en prod : URL du CDN).
+const DEMO_IMAGES = {
+  sunset: { src: "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20800%201000%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ff9a4d%22/%3E%3Cstop%20offset%3D%22.6%22%20stop-color%3D%22%237a3f6b%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%231f2340%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22800%22%20height%3D%221000%22%20fill%3D%22url%28%23g%29%22/%3E%3Ccircle%20cx%3D%22560%22%20cy%3D%22380%22%20r%3D%22110%22%20fill%3D%22%23ffd27a%22/%3E%3Crect%20y%3D%22620%22%20width%3D%22800%22%20height%3D%22380%22%20fill%3D%22%231e2a48%22/%3E%3Crect%20x%3D%2290%22%20y%3D%22470%22%20width%3D%22420%22%20height%3D%22190%22%20rx%3D%2234%22%20fill%3D%22%23f2c62c%22/%3E%3Cg%20fill%3D%22%2338425c%22%3E%3Crect%20x%3D%22120%22%20y%3D%22500%22%20width%3D%2270%22%20height%3D%2260%22%20rx%3D%228%22/%3E%3Crect%20x%3D%22210%22%20y%3D%22500%22%20width%3D%2270%22%20height%3D%2260%22%20rx%3D%228%22/%3E%3Crect%20x%3D%22300%22%20y%3D%22500%22%20width%3D%2270%22%20height%3D%2260%22%20rx%3D%228%22/%3E%3Crect%20x%3D%22390%22%20y%3D%22500%22%20width%3D%2270%22%20height%3D%2260%22%20rx%3D%228%22/%3E%3C/g%3E%3Ccircle%20cx%3D%22170%22%20cy%3D%22665%22%20r%3D%2242%22%20fill%3D%22%23141414%22/%3E%3Ccircle%20cx%3D%22430%22%20cy%3D%22665%22%20r%3D%2242%22%20fill%3D%22%23141414%22/%3E%3C/svg%3E", width: 800, height: 1000 },
+  plate: { src: "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20800%20800%22%3E%3Crect%20width%3D%22800%22%20height%3D%22800%22%20fill%3D%22%23c9733a%22/%3E%3Ccircle%20cx%3D%22400%22%20cy%3D%22400%22%20r%3D%22300%22%20fill%3D%22%23f4f1f1%22/%3E%3Ccircle%20cx%3D%22400%22%20cy%3D%22400%22%20r%3D%22240%22%20fill%3D%22%23f7e9b8%22/%3E%3Cg%20fill%3D%22%23efe0a0%22%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22300%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22337%22%20cy%3D%22353%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22374%22%20cy%3D%22406%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22411%22%20cy%3D%22459%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22448%22%20cy%3D%22512%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22485%22%20cy%3D%22345%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22302%22%20cy%3D%22398%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22339%22%20cy%3D%22451%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22376%22%20cy%3D%22504%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22413%22%20cy%3D%22337%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22450%22%20cy%3D%22390%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22487%22%20cy%3D%22443%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22304%22%20cy%3D%22496%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22341%22%20cy%3D%22329%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22378%22%20cy%3D%22382%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22415%22%20cy%3D%22435%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22452%22%20cy%3D%22488%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22489%22%20cy%3D%22321%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22306%22%20cy%3D%22374%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22343%22%20cy%3D%22427%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22380%22%20cy%3D%22480%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22417%22%20cy%3D%22313%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22454%22%20cy%3D%22366%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22491%22%20cy%3D%22419%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22308%22%20cy%3D%22472%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22345%22%20cy%3D%22305%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22382%22%20cy%3D%22358%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22419%22%20cy%3D%22411%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22456%22%20cy%3D%22464%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22493%22%20cy%3D%22517%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22310%22%20cy%3D%22350%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22347%22%20cy%3D%22403%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22384%22%20cy%3D%22456%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22421%22%20cy%3D%22509%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22458%22%20cy%3D%22342%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22495%22%20cy%3D%22395%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22312%22%20cy%3D%22448%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22349%22%20cy%3D%22501%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22386%22%20cy%3D%22334%22%20r%3D%229%22/%3E%3Ccircle%20cx%3D%22423%22%20cy%3D%22387%22%20r%3D%229%22/%3E%3C/g%3E%3Cellipse%20cx%3D%22470%22%20cy%3D%22420%22%20rx%3D%22150%22%20ry%3D%2270%22%20fill%3D%22%238a5a2b%22%20transform%3D%22rotate%28-20%20470%20420%29%22/%3E%3Cpath%20d%3D%22M330%20470%20l40%20-20%20l10%2040z%22%20fill%3D%22%233a8a3a%22/%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22500%22%20r%3D%2222%22%20fill%3D%22%23d33%22/%3E%3C/svg%3E", width: 800, height: 800 },
+  market: { src: "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20800%201000%22%3E%3Crect%20width%3D%22800%22%20height%3D%221000%22%20fill%3D%22%23f5d48a%22/%3E%3Cpath%20d%3D%22M0%20260%20L400%20120%20L800%20260%20Z%22%20fill%3D%22%23c0392b%22/%3E%3Crect%20y%3D%22260%22%20width%3D%22800%22%20height%3D%2240%22%20fill%3D%22%23e74c3c%22/%3E%3Cg%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22420%22%20r%3D%2248%22%20fill%3D%22%23e67e22%22/%3E%3Ccircle%20cx%3D%22260%22%20cy%3D%22420%22%20r%3D%2248%22%20fill%3D%22%2327ae60%22/%3E%3Ccircle%20cx%3D%22400%22%20cy%3D%22420%22%20r%3D%2248%22%20fill%3D%22%23c0392b%22/%3E%3Ccircle%20cx%3D%22540%22%20cy%3D%22420%22%20r%3D%2248%22%20fill%3D%22%23f1c40f%22/%3E%3Ccircle%20cx%3D%22680%22%20cy%3D%22420%22%20r%3D%2248%22%20fill%3D%22%23e67e22%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22540%22%20r%3D%2248%22%20fill%3D%22%2327ae60%22/%3E%3Ccircle%20cx%3D%22260%22%20cy%3D%22540%22%20r%3D%2248%22%20fill%3D%22%23c0392b%22/%3E%3Ccircle%20cx%3D%22400%22%20cy%3D%22540%22%20r%3D%2248%22%20fill%3D%22%23f1c40f%22/%3E%3Ccircle%20cx%3D%22540%22%20cy%3D%22540%22%20r%3D%2248%22%20fill%3D%22%23e67e22%22/%3E%3Ccircle%20cx%3D%22680%22%20cy%3D%22540%22%20r%3D%2248%22%20fill%3D%22%2327ae60%22/%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22660%22%20r%3D%2248%22%20fill%3D%22%23c0392b%22/%3E%3Ccircle%20cx%3D%22260%22%20cy%3D%22660%22%20r%3D%2248%22%20fill%3D%22%23f1c40f%22/%3E%3Ccircle%20cx%3D%22400%22%20cy%3D%22660%22%20r%3D%2248%22%20fill%3D%22%23e67e22%22/%3E%3Ccircle%20cx%3D%22540%22%20cy%3D%22660%22%20r%3D%2248%22%20fill%3D%22%2327ae60%22/%3E%3Ccircle%20cx%3D%22680%22%20cy%3D%22660%22%20r%3D%2248%22%20fill%3D%22%23c0392b%22/%3E%3C/g%3E%3Crect%20y%3D%22780%22%20width%3D%22800%22%20height%3D%22220%22%20fill%3D%22%237a4a2a%22/%3E%3C/svg%3E", width: 800, height: 1000 },
+  neighbour: { src: "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20800%201000%22%3E%3Crect%20width%3D%22800%22%20height%3D%221000%22%20fill%3D%22%233b4a5a%22/%3E%3Crect%20x%3D%2280%22%20y%3D%22560%22%20width%3D%22640%22%20height%3D%22200%22%20fill%3D%22%236b4b33%22/%3E%3Ccircle%20cx%3D%22400%22%20cy%3D%22440%22%20r%3D%22120%22%20fill%3D%22%238a5a3a%22/%3E%3Crect%20x%3D%22250%22%20y%3D%22540%22%20width%3D%22300%22%20height%3D%22220%22%20rx%3D%2260%22%20fill%3D%22%232d6cdf%22/%3E%3Ctext%20x%3D%22400%22%20y%3D%22900%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%22%20font-size%3D%2244%22%20fill%3D%22%23fff%22%3Ezzz%E2%80%A6%3C/text%3E%3C/svg%3E", width: 800, height: 1000 },
+};
+// Stickers personnels de démo (créés par des Badeurs).
+const DEMO_STICKERS = {
+  us1: { ownerId: 'u1', label: "Gbaka boss", src: "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Crect%20x%3D%2216%22%20y%3D%2216%22%20width%3D%22480%22%20height%3D%22480%22%20rx%3D%2296%22%20fill%3D%22%23ffb547%22/%3E%3Crect%20x%3D%2270%22%20y%3D%22150%22%20width%3D%22372%22%20height%3D%22190%22%20rx%3D%2240%22%20fill%3D%22%231a1919%22/%3E%3Crect%20x%3D%22100%22%20y%3D%22180%22%20width%3D%2270%22%20height%3D%2260%22%20rx%3D%2210%22%20fill%3D%22%235ab0ff%22/%3E%3Crect%20x%3D%22190%22%20y%3D%22180%22%20width%3D%2270%22%20height%3D%2260%22%20rx%3D%2210%22%20fill%3D%22%235ab0ff%22/%3E%3Crect%20x%3D%22280%22%20y%3D%22180%22%20width%3D%2270%22%20height%3D%2260%22%20rx%3D%2210%22%20fill%3D%22%235ab0ff%22/%3E%3Crect%20x%3D%22370%22%20y%3D%22180%22%20width%3D%2244%22%20height%3D%2260%22%20rx%3D%2210%22%20fill%3D%22%235ab0ff%22/%3E%3Ccircle%20cx%3D%22150%22%20cy%3D%22345%22%20r%3D%2238%22%20fill%3D%22%231a1919%22%20stroke%3D%22%23ffb547%22%20stroke-width%3D%2214%22/%3E%3Ccircle%20cx%3D%22362%22%20cy%3D%22345%22%20r%3D%2238%22%20fill%3D%22%231a1919%22%20stroke%3D%22%23ffb547%22%20stroke-width%3D%2214%22/%3E%3Ctext%20x%3D%22256%22%20y%3D%22120%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%20Black%2C%20Arial%2C%20sans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2270%22%20fill%3D%22%231a1919%22%3EGBAKA%3C/text%3E%3Ctext%20x%3D%22256%22%20y%3D%22455%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%20Black%2C%20Arial%2C%20sans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2264%22%20fill%3D%22%231a1919%22%3EBOSS%3C/text%3E%3C/svg%3E" },
+  us2: { ownerId: 'u2', label: "Tantie a dit non", src: "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Crect%20x%3D%2216%22%20y%3D%2216%22%20width%3D%22480%22%20height%3D%22480%22%20rx%3D%2296%22%20fill%3D%22%23ff6fa8%22/%3E%3Ccircle%20cx%3D%22256%22%20cy%3D%22230%22%20r%3D%22140%22%20fill%3D%22%238a4b2a%22/%3E%3Cpath%20d%3D%22M116%20210%20Q256%2040%20396%20210%20Q330%20130%20256%20140%20Q182%20130%20116%20210Z%22%20fill%3D%22%231a1919%22/%3E%3Cpath%20d%3D%22M180%20205%20l50%2018%20M332%20205%20l-50%2018%22%20stroke%3D%22%231a1919%22%20stroke-width%3D%2214%22%20stroke-linecap%3D%22round%22/%3E%3Ccircle%20cx%3D%22208%22%20cy%3D%22240%22%20r%3D%2214%22%20fill%3D%22%231a1919%22/%3E%3Ccircle%20cx%3D%22304%22%20cy%3D%22240%22%20r%3D%2214%22%20fill%3D%22%231a1919%22/%3E%3Cpath%20d%3D%22M206%20305%20Q256%20280%20306%20305%22%20stroke%3D%22%231a1919%22%20stroke-width%3D%2214%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%3Ctext%20x%3D%22256%22%20y%3D%22455%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%20Black%2C%20Arial%2C%20sans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2272%22%20fill%3D%22%231a1919%22%3ENON%20%21%3C/text%3E%3C/svg%3E" },
+  us3: { ownerId: 'u6', label: "Yop City", src: "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Crect%20x%3D%2216%22%20y%3D%2216%22%20width%3D%22480%22%20height%3D%22480%22%20rx%3D%2296%22%20fill%3D%22%239810e6%22/%3E%3Crect%20x%3D%2270%22%20y%3D%22250%22%20width%3D%2270%22%20height%3D%22170%22%20fill%3D%22%23ede3fa%22/%3E%3Crect%20x%3D%22155%22%20y%3D%22190%22%20width%3D%2280%22%20height%3D%22230%22%20fill%3D%22%23ffffff%22/%3E%3Crect%20x%3D%22250%22%20y%3D%22230%22%20width%3D%2270%22%20height%3D%22190%22%20fill%3D%22%23ede3fa%22/%3E%3Crect%20x%3D%22335%22%20y%3D%22170%22%20width%3D%2290%22%20height%3D%22250%22%20fill%3D%22%23ffffff%22/%3E%3Ccircle%20cx%3D%22390%22%20cy%3D%22105%22%20r%3D%2242%22%20fill%3D%22%23ffb547%22/%3E%3Ctext%20x%3D%22256%22%20y%3D%22130%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%20Black%2C%20Arial%2C%20sans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2274%22%20fill%3D%22%23ffffff%22%3EYOP%3C/text%3E%3Ctext%20x%3D%22256%22%20y%3D%22480%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%20Black%2C%20Arial%2C%20sans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2254%22%20fill%3D%22%23ffffff%22%3ECITY%3C/text%3E%3C/svg%3E" },
+  us4: { ownerId: 'u29', label: 'Konan le nul', src: "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Crect%20x%3D%2216%22%20y%3D%2216%22%20width%3D%22480%22%20height%3D%22480%22%20rx%3D%2296%22%20fill%3D%22%235ab0ff%22/%3E%3Ccircle%20cx%3D%22256%22%20cy%3D%22220%22%20r%3D%22120%22%20fill%3D%22%238a5a3a%22/%3E%3Crect%20x%3D%22150%22%20y%3D%22320%22%20width%3D%22212%22%20height%3D%22140%22%20rx%3D%2240%22%20fill%3D%22%232d6cdf%22/%3E%3Ctext%20x%3D%22256%22%20y%3D%22110%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%20Black%2C%20Arial%22%20font-size%3D%2248%22%20fill%3D%22%231a1919%22%3EKONAN%20LE%20NUL%3C/text%3E%3C/svg%3E" },
+};
+
 function seed() {
   const r = rng(225), now = Date.now();
   const pick = (a) => a[Math.floor(r() * a.length)];
@@ -77,13 +93,23 @@ function seed() {
     const likes = Math.floor(Math.pow(r(), 3) * 3500);
     badings.push({ id: `b${i + 1}`, authorId: pick(ids), anonymous: r() < 0.3, text: TEXTS[i % TEXTS.length], createdAt: now - age, likes, rebades: Math.floor(likes * r() * 0.15), shares: Math.floor(likes * r() * 0.3), reportsCount: 0, status: 'visible' });
   }
-  BAD_TEXTS.forEach((t, i) => badings.push({ id: `bx${i + 1}`, authorId: ['u29', 'u12', 'u8'][i], anonymous: i === 2, text: t, createdAt: now - (i + 1) * 5 * H, likes: int(0, 30), rebades: 0, shares: 0, reportsCount: [6, 4, 3][i], status: i === 0 ? 'hidden' : 'visible', hiddenReason: i === 0 ? 'Masquage automatique (6 signalements)' : undefined }));
+  // Badings en image (F1) : formats 4:5 ou 1:1 seulement, légende courte.
+  [['b2', 'sunset', 'Le gbaka de 18h. Regardez bien le chauffeur 😭'], ['b5', 'plate', 'Attiéké « comme d’habitude ». Première fois dans ce maquis.'], ['b9', 'market', ''], ['b16', 'sunset', 'Pendant que vous dormez, le gbaka travaille.']].forEach(([id, img, cap]) => {
+    const b = badings.find((x) => x.id === id); b.image = DEMO_IMAGES[img]; b.text = cap;
+  });
+  BAD_TEXTS.forEach((t, i) => badings.push({ id: `bx${i + 1}`, authorId: ['u29', 'u12', 'u8'][i], anonymous: i === 2, text: t, ...(i === 0 ? { image: DEMO_IMAGES.neighbour } : {}), createdAt: now - (i + 1) * 5 * H, likes: int(0, 30), rebades: 0, shares: 0, reportsCount: [6, 4, 3][i], status: i === 0 ? 'hidden' : 'visible', hiddenReason: i === 0 ? 'Masquage automatique (6 signalements)' : undefined }));
+
+  // Stickers personnels (F8) : créés par des Badeurs, enregistrés par d'autres.
+  const customStickers = Object.fromEntries(Object.entries(DEMO_STICKERS).map(([id, st], i) => [id, { id, ...st, createdAt: now - (i + 2) * D, saves: [128, 342, 57, 4][i] ?? 0, status: 'visible' }]));
 
   const comments = [];
   for (let i = 0; i < 60; i++) {
     const b = pick(badings);
     comments.push({ id: `c${i + 1}`, badingId: b.id, authorId: pick(ids), text: pick(COMMENTS), createdAt: Math.min(now, b.createdAt + int(1, 600) * MIN), likes: int(0, 80), status: 'visible' });
   }
+  const STK = ['mort', 'ehhh', 'gate', 'us1', 'us2', 'us3', 'fohi', 'pardon'];
+  for (let i = 0; i < 14; i++) { const b = pick(badings); comments.push({ id: `cs${i + 1}`, badingId: b.id, authorId: pick(ids), text: '', sticker: STK[i % STK.length], createdAt: Math.min(now, b.createdAt + int(1, 600) * MIN), likes: int(0, 40), status: 'visible' }); }
+  comments.push({ id: 'cs99', badingId: 'b3', authorId: 'u29', text: '', sticker: 'us4', createdAt: now - 2 * H, likes: 0, status: 'visible' });
   comments.push({ id: 'cx1', badingId: 'b3', authorId: 'u12', text: 'Toi tu es vraiment bête, je sais où tu habites', createdAt: now - 7 * H, likes: 0, status: 'visible' });
 
   const R = (o) => ({ status: 'open', ...o });
@@ -94,6 +120,8 @@ function seed() {
     R({ id: 'r4', targetType: 'bading', targetId: 'bx3', reporterId: 'u22', reason: 'haine', details: 'Généralisation sur les habitants d\'un quartier.', createdAt: now - 14 * H }),
     R({ id: 'r5', targetType: 'comment', targetId: 'cx1', reporterId: 'u2', reason: 'harcelement', details: 'Menace à peine voilée.', createdAt: now - 6 * H }),
     R({ id: 'r6', targetType: 'user', targetId: 'u12', reporterId: 'u9', reason: 'usurpation', details: 'Se fait passer pour un humoriste connu.', createdAt: now - 26 * H }),
+    R({ id: 'r10', targetType: 'sticker', targetId: 'us4', reporterId: 'u17', reason: 'vraie_personne', details: 'C’est la photo d’un vrai voisin avec son nom.', createdAt: now - 90 * MIN }),
+    R({ id: 'r11', targetType: 'sticker', targetId: 'us4', reporterId: 'u21', reason: 'harcelement', createdAt: now - 60 * MIN }),
     R({ id: 'r7', targetType: 'bading', targetId: 'b14', reporterId: 'u31', reason: 'autre', details: 'Je trouve ça pas drôle.', createdAt: now - 30 * H }),
     { id: 'r8', targetType: 'bading', targetId: 'b20', reporterId: 'u16', reason: 'choquant', createdAt: now - 4 * D, status: 'dismissed', resolvedBy: 'u5', resolvedAt: now - 3 * D, decision: 'Humour sans cible, conforme à la charte' },
     { id: 'r9', targetType: 'bading', targetId: 'b33', reporterId: 'u11', reason: 'spam', createdAt: now - 8 * D, status: 'actioned', resolvedBy: 'admin', resolvedAt: now - 8 * D + 2 * H, decision: 'Bading supprimé + avertissement' },
@@ -121,9 +149,9 @@ function seed() {
   }
 
   return {
-    v: 1, session: null, users, badings, comments, reports, badgeRequests, dataRequests, daily,
+    v: 2, session: null, users, badings, comments, customStickers, reports, badgeRequests, dataRequests, daily,
     bannedWords: ['connard', 'pute', 'nègre', 'tuer', 'sale race', 'arnaque garantie'],
-    rules: { minLength: 10, maxLength: 1000, opinionMax: 280, commentMax: 500, dailyLimit: 20, maxMentions: 5, autoHideThreshold: 5, badgeMinAgeDays: 30, badgeMinBadings: 10, badgeRetryDays: 30, deletionDays: 30 },
+    rules: { minLength: 10, maxLength: 1000, captionMax: 280, myStickersMax: 50, opinionMax: 280, commentMax: 500, dailyLimit: 20, maxMentions: 5, autoHideThreshold: 5, badgeMinAgeDays: 30, badgeMinBadings: 10, badgeRetryDays: 30, deletionDays: 30 },
     platform: { signupsOpen: true, anonymousEnabled: true, commentsEnabled: true, maintenance: false, maintenanceMessage: 'On Bade fait une petite pause, on revient vite 😅' },
     announcements: [{ id: 'a1', title: 'Bienvenue sur On Bade 🎉', body: 'Raconte ta galère du jour et fais rire le pays.', audience: 'all', sentAt: now - 25 * D, by: 'admin', reach: 1240 }],
     audit: [
@@ -137,7 +165,8 @@ function seed() {
 // ─── État ──────────────────────────────────────────────────
 let state;
 try { state = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { state = seed(); }
-if (state.v !== 1) state = seed();
+// Nouvelle version des données (images et stickers) : on régénère la démo en gardant la session.
+if (state.v !== 2) { const session = state.session ?? null; state = seed(); state.session = session; }
 
 const listeners = new Set();
 let saveTimer;
@@ -167,9 +196,12 @@ export const pendingData = () => state.dataRequests.filter((d) => d.status === '
 export const commentsOf = (badingId) => state.comments.filter((c) => c.badingId === badingId);
 export const badingsOf = (userId) => state.badings.filter((b) => b.authorId === userId);
 export const reportsOn = (type, id) => state.reports.filter((r) => r.targetType === type && r.targetId === id);
+export const customSticker = (id) => state.customStickers?.[id];
+export const stickerUses = (id) => state.comments.filter((c) => c.sticker === id && c.status !== 'deleted').length;
 export function targetLabel(type, id) {
   if (type === 'bading') return `Bading ${id}`;
   if (type === 'comment') return `Commentaire ${id}`;
+  if (type === 'sticker') return `Sticker ${state.customStickers?.[id]?.label ?? id}`;
   if (type === 'user') return `@${state.users[id]?.pseudo ?? id}`;
   return id ?? '';
 }
@@ -210,6 +242,14 @@ export function setCommentStatus(id, status, reason = '') {
   const c = comment(id); if (!c) return;
   c.status = status;
   log(status === 'deleted' ? 'comment.delete' : 'comment.restore', id, reason);
+}
+
+// ─── Stickers personnels ───────────────────────────────────
+/** Retire un sticker partout : il s'affiche « Sticker retiré par la modération » dans les commentaires et quitte les collections. */
+export function setStickerStatus(id, status, reason = '') {
+  const st = state.customStickers?.[id]; if (!st) return;
+  st.status = status;
+  log(status === 'removed' ? 'sticker.remove' : 'sticker.restore', id, `${st.label ? `« ${st.label} »` : id} de @${state.users[st.ownerId]?.pseudo ?? '?'}${reason ? ` : ${reason}` : ''}`);
 }
 
 // ─── Utilisateurs ──────────────────────────────────────────

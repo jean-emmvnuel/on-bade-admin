@@ -7,7 +7,7 @@ const ACTIONS = {
   'vault.reveal': 'Auteur révélé', 'comment.delete': 'Commentaire supprimé', 'comment.restore': 'Commentaire rétabli', 'user.sanction': 'Sanction', 'user.unsanction': 'Sanction levée',
   'badge.grant': 'Badge attribué', 'badge.revoke': 'Badge retiré', 'badge.decision': 'Demande de badge', 'user.role': 'Rôle modifié', 'user.pseudo': 'Pseudo modifié',
   'user.password_reset': 'Mot de passe', 'user.delete': 'Compte supprimé', 'data.process': 'Données perso', 'data.cancel': 'Données perso', 'announcement.send': 'Annonce',
-  'words.add': 'Mot interdit', 'words.remove': 'Mot interdit', 'rules.update': 'Règles', 'platform.update': 'Plateforme', 'platform.reset': 'Démo',
+  'sticker.remove': 'Sticker retiré', 'sticker.restore': 'Sticker rétabli', 'words.add': 'Mot interdit', 'words.remove': 'Mot interdit', 'rules.update': 'Règles', 'platform.update': 'Plateforme', 'platform.reset': 'Démo',
 };
 export const actionLabel = (a) => ACTIONS[a] ?? a;
 
