@@ -40,7 +40,7 @@ const NAV = [
   ['Plateforme', [['settings', '/settings', 'sliders', 'Paramètres']]],
 ];
 
-export const go = (path) => { location.hash = `#${path}`; };
+export const go = (path) => { if (location.hash === `#${path}`) render(); else location.hash = `#${path}`; };
 function parse() {
   const raw = location.hash.slice(1) || '/';
   const [path, qs] = raw.split('?');

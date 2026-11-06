@@ -63,7 +63,7 @@ export function userDetailView(root, { params }) {
       <div class="profile-actions">
         ${!isMe && u.status === 'active' ? `<button class="btn btn-danger btn-sm" data-k="sanction">${icon('ban')} Sanctionner</button>` : ''}
         ${!isMe && ['suspended', 'banned'].includes(u.status) ? `<button class="btn btn-secondary btn-sm" data-k="lift">${icon('restore')} Lever la sanction</button>` : ''}
-        <button class="btn btn-secondary btn-sm" data-k="badge">${icon('badgeCheck')} ${u.verified ? 'Retirer le badge' : 'Donner le badge'}</button>
+        ${S.canManageBadges() ? `<button class="btn btn-secondary btn-sm" data-k="badge">${icon('badgeCheck')} ${u.verified ? 'Retirer le badge' : 'Attribuer le badge'}</button>` : ''}
         ${!isMe ? `<button class="btn btn-secondary btn-sm" data-k="role">${icon('shield')} Rôle</button>` : ''}
         <button class="btn btn-secondary btn-sm" data-k="pseudo">${icon('userPen')} Pseudo</button>
         <button class="btn btn-secondary btn-sm" data-k="reset">${icon('key')} Mot de passe</button>

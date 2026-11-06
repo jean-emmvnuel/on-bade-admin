@@ -5,7 +5,7 @@ const FIELDS = [
   ['Publication', [['minLength', 'Longueur minimale d’un bading', 'caractères'], ['maxLength', 'Longueur maximale d’un bading', 'caractères'], ['captionMax', 'Légende d’un bading avec image', 'caractères'], ['dailyLimit', 'Badings par jour et par compte', 'badings'], ['maxMentions', 'Mentions maximum par bading', 'mentions'], ['opinionMax', 'Longueur d’un avis de rebade', 'caractères'], ['commentMax', 'Longueur d’un commentaire', 'caractères']]],
   ['Stickers', [['myStickersMax', 'Stickers par collection', 'stickers']]],
   ['Modération', [['autoHideThreshold', 'Masquage automatique après', 'signalements']]],
-  ['Badge vérifié', [['badgeMinAgeDays', 'Ancienneté minimale du compte', 'jours'], ['badgeMinBadings', 'Badings publiés minimum', 'badings'], ['badgeRetryDays', 'Délai avant nouvelle demande', 'jours']]],
+  ['Badge vérifié', [['badgeActiveDays', 'Actif : dernier bading signé il y a moins de', 'jours'], ['badgeMinLaughs', 'Rires reçus minimum (badings signés)', 'rires'], ['badgeRetryDays', 'Délai avant nouvelle demande', 'jours']]],
   ['Données personnelles', [['deletionDays', 'Délai de traitement des demandes', 'jours']]],
 ];
 

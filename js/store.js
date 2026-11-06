@@ -131,7 +131,7 @@ function seed() {
     { id: 'g1', userId: 'u6', links: ['https://instagram.com/yopougonfm', 'https://facebook.com/yopougonfm'], document: 'RCCM (page)', createdAt: now - 2 * D, status: 'pending' },
     { id: 'g2', userId: 'u1', links: ['https://tiktok.com/@koffi225'], document: 'Carte nationale d\'identité', createdAt: now - 20 * H, status: 'pending' },
     { id: 'g3', userId: 'u24', links: ['https://youtube.com/@tchepmaster'], document: 'Passeport', createdAt: now - 5 * H, status: 'pending' },
-    { id: 'g4', userId: 'u10', links: [], document: 'Carte nationale d\'identité', createdAt: now - 12 * D, status: 'refused', reason: 'Il faut au moins 10 badings publiés', decidedAt: now - 9 * D },
+    { id: 'g4', userId: 'u10', links: [], document: 'Carte nationale d\'identité', createdAt: now - 12 * D, status: 'refused', reason: 'Il faut au moins 1 000 rires reçus sur ses badings signés', decidedAt: now - 9 * D },
     { id: 'g5', userId: 'u3', links: ['https://x.com/levraizoba'], document: 'Carte nationale d\'identité', createdAt: now - 40 * D, status: 'accepted', decidedAt: now - 38 * D },
   ];
 
@@ -151,7 +151,7 @@ function seed() {
   return {
     v: 2, session: null, users, badings, comments, customStickers, reports, badgeRequests, dataRequests, daily,
     bannedWords: ['connard', 'pute', 'nègre', 'tuer', 'sale race', 'arnaque garantie'],
-    rules: { minLength: 10, maxLength: 1000, captionMax: 280, myStickersMax: 50, opinionMax: 280, commentMax: 500, dailyLimit: 20, maxMentions: 5, autoHideThreshold: 5, badgeMinAgeDays: 30, badgeMinBadings: 10, badgeRetryDays: 30, deletionDays: 30 },
+    rules: { minLength: 10, maxLength: 1000, captionMax: 280, myStickersMax: 50, opinionMax: 280, commentMax: 500, dailyLimit: 20, maxMentions: 5, autoHideThreshold: 5, badgeActiveDays: 30, badgeMinLaughs: 1000, badgeRetryDays: 30, deletionDays: 30 },
     platform: { signupsOpen: true, anonymousEnabled: true, commentsEnabled: true, maintenance: false, maintenanceMessage: 'On Bade fait une petite pause, on revient vite 😅' },
     announcements: [{ id: 'a1', title: 'Bienvenue sur On Bade 🎉', body: 'Raconte ta galère du jour et fais rire le pays.', audience: 'all', sentAt: now - 25 * D, by: 'admin', reach: 1240 }],
     audit: [
@@ -167,6 +167,8 @@ let state;
 try { state = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { state = seed(); }
 // Nouvelle version des données (images et stickers) : on régénère la démo en gardant la session.
 if (state.v !== 2) { const session = state.session ?? null; state = seed(); state.session = session; }
+// Nouvelles règles du badge (actif + 1 000 rires) sans perdre les données en place.
+if (!('badgeMinLaughs' in state.rules)) { state.rules.badgeActiveDays = 30; state.rules.badgeMinLaughs = 1000; delete state.rules.badgeMinAgeDays; delete state.rules.badgeMinBadings; }
 
 const listeners = new Set();
 let saveTimer;
@@ -265,7 +267,23 @@ export function liftSanction(userId) {
   u.status = 'active'; u.suspendedUntil = undefined;
   log('user.unsanction', userId, 'Sanction levée, compte réactivé');
 }
-export function setVerified(userId, v) { const u = user(userId); if (!u) return; u.verified = v; log(v ? 'badge.grant' : 'badge.revoke', userId, v ? 'Badge vérifié attribué' : 'Badge vérifié retiré'); }
+/** Le badge vérifié ne s'attribue, ne se retire et ne se valide que par un administrateur (pas les modérateurs). */
+export const canManageBadges = () => me()?.role === 'admin';
+/**
+ * Conditions pour qu'un Badeur puisse demander le badge : actif (un bading signé ces N derniers jours)
+ * et au moins 1 000 rires reçus sur ses badings signés. Les badings anonymes ne comptent jamais.
+ */
+export function badgeEligibility(userId) {
+  const R = state.rules, signed = state.badings.filter((b) => b.authorId === userId && !b.anonymous && b.status !== 'deleted');
+  const last = signed.reduce((m, b) => Math.max(m, b.createdAt), 0);
+  const lastDays = last ? Math.floor((Date.now() - last) / 86_400_000) : null;
+  const laughs = signed.reduce((n, b) => n + (b.likes || 0), 0);
+  const active = lastDays !== null && lastDays <= R.badgeActiveDays, enoughLaughs = laughs >= R.badgeMinLaughs;
+  return { active, lastDays, laughs, enoughLaughs, eligible: active && enoughLaughs };
+}
+export function setVerified(userId, v) { if (!canManageBadges()) return false; const u = user(userId); if (!u) return false; u.verified = v;
+  // Attribuer directement clôt une éventuelle demande en attente.
+  if (v) state.badgeRequests.filter((g) => g.userId === userId && g.status === 'pending').forEach((g) => Object.assign(g, { status: 'accepted', decidedAt: Date.now() })); log(v ? 'badge.grant' : 'badge.revoke', userId, v ? 'Badge vérifié attribué' : 'Badge vérifié retiré'); }
 export function setRole(userId, role) { const u = user(userId); if (!u) return; const old = u.role; u.role = role; log('user.role', userId, `${ROLES[old]} → ${ROLES[role]}`); }
 export function setPseudo(userId, pseudo) { const u = user(userId); if (!u) return; const old = u.pseudo; u.pseudo = pseudo; u.verified = false; log('user.pseudo', userId, `@${old} → @${pseudo} (badge retiré)`); }
 export function sendPasswordReset(userId) { const u = user(userId); log('user.password_reset', userId, `Lien de réinitialisation envoyé à ${u?.email}`); }
@@ -279,7 +297,8 @@ export function deleteUser(userId, reason) {
 
 // ─── Badges ────────────────────────────────────────────────
 export function decideBadge(id, accepted, reason = '') {
-  const g = state.badgeRequests.find((x) => x.id === id); if (!g) return;
+  if (!canManageBadges()) return false;
+  const g = state.badgeRequests.find((x) => x.id === id); if (!g) return false;
   Object.assign(g, { status: accepted ? 'accepted' : 'refused', reason: accepted ? undefined : reason, decidedAt: Date.now(), document: `${g.document} (supprimé après traitement)` });
   if (accepted && user(g.userId)) user(g.userId).verified = true;
   log('badge.decision', g.userId, accepted ? 'Demande acceptée' : `Demande refusée : ${reason}`);

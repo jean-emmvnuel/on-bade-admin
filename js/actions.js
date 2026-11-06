@@ -92,7 +92,7 @@ export async function userMenu(anchor, u) {
     { k: 'open', icon: 'user', label: 'Voir le profil' },
     !isMe && u.status === 'active' && { k: 'sanction', icon: 'ban', label: 'Sanctionner' },
     !isMe && (u.status === 'suspended' || u.status === 'banned') && { k: 'lift', icon: 'restore', label: 'Lever la sanction' },
-    { k: 'badge', icon: 'badgeCheck', label: u.verified ? 'Retirer le badge' : 'Donner le badge' },
+    ...(S.canManageBadges() ? [{ k: 'badge', icon: 'badgeCheck', label: u.verified ? 'Retirer le badge' : 'Attribuer le badge' }] : []),
     !isMe && { k: 'role', icon: 'shield', label: 'Changer le rôle' },
     { k: 'pseudo', icon: 'userPen', label: 'Modifier le pseudo' },
     { k: 'reset', icon: 'key', label: 'Envoyer un lien de mot de passe' },
@@ -107,7 +107,14 @@ export async function userAction(k, u) {
   if (k === 'open') { location.hash = `#/users/${u.id}`; return; }
   if (k === 'sanction') { await sanctionDialog(u.id); return refresh(); }
   if (k === 'lift') { if (await confirmAction({ title: `Réactiver @${u.pseudo}`, text: 'Le compte pourra de nouveau publier et commenter.', confirm: 'Lever la sanction' })) { S.liftSanction(u.id); toast('Compte réactivé'); refresh(); } return; }
-  if (k === 'badge') { if (await confirmAction({ title: u.verified ? 'Retirer le badge vérifié' : 'Donner le badge vérifié', text: `Pour @${esc(u.pseudo)}.`, confirm: u.verified ? 'Retirer' : 'Donner le badge', danger: u.verified })) { S.setVerified(u.id, !u.verified); toast(u.verified ? 'Badge attribué' : 'Badge retiré'); refresh(); } return; }
+  if (k === 'badge') {
+    if (!S.canManageBadges()) { toast('Réservé à l’administrateur'); return; }
+    const el = S.badgeEligibility(u.id), R = S.get().rules;
+    const info = u.verified ? `Pour @${esc(u.pseudo)}. Le badge disparaît de son profil et de ses badings signés.`
+      : `Pour @${esc(u.pseudo)} : ${el.active ? 'actif' : 'pas actif'} (${el.lastDays === null ? 'aucun bading signé' : `dernier bading signé il y a ${el.lastDays} j`}), ${S.compact(el.laughs)} rires reçus sur ${S.compact(R.badgeMinLaughs)} demandés.${el.eligible ? '' : ' Les conditions ne sont pas remplies : en tant qu’administrateur, tu peux quand même l’attribuer.'}`;
+    if (await confirmAction({ title: u.verified ? 'Retirer le badge vérifié' : 'Attribuer le badge vérifié', text: info, confirm: u.verified ? 'Retirer' : 'Attribuer le badge', danger: u.verified })) { S.setVerified(u.id, !u.verified); toast(u.verified ? 'Badge attribué' : 'Badge retiré'); refresh(); }
+    return;
+  }
   if (k === 'reset') { if (await confirmAction({ title: 'Réinitialiser le mot de passe', text: `Un lien valable 1 heure sera envoyé à <b>${esc(u.email)}</b>. Les sessions ouvertes seront fermées.`, confirm: 'Envoyer le lien' })) { S.sendPasswordReset(u.id); toast('Lien envoyé'); refresh(); } return; }
   if (k === 'role') {
     const box = modal({ title: `Rôle de @${u.pseudo}`, html: `<div class="levels">${Object.entries(S.ROLES).map(([r, l]) => `<label class="level"><input type="radio" name="role" value="${r}" ${u.role === r ? 'checked' : ''}/><span><b>${l}</b><small>${{ user: 'Utilise l’app, aucun accès au back-office.', moderator: 'Traite les signalements, masque les contenus, sanctionne (niveaux 1 et 2).', admin: 'Tous les accès : utilisateurs, coffre d’anonymat, règles, équipe, paramètres.' }[r]}</small></span></label>`).join('')}</div>
