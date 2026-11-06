@@ -348,5 +348,5 @@ export function timeAgo(ts) {
   return new Date(ts).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 export const fmtDate = (ts) => new Date(ts).toLocaleString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-export const compact = (n) => (n < 1000 ? String(n) : n < 10_000 ? `${(n / 1000).toFixed(1).replace('.0', '')} k` : `${Math.round(n / 1000)} k`);
+export const compact = (n) => (n < 1000 ? String(n) : n < 10_000 ? `${(n / 1000).toFixed(1).replace('.0', '').replace('.', ',')} k` : `${Math.round(n / 1000)} k`);
 export const fmt = (n) => n.toLocaleString('fr-FR');

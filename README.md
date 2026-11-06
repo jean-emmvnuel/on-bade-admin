@@ -47,3 +47,17 @@ js/views/*.js       ← un fichier par écran
 ---
 
 **On Bade** · une app **ORIVERSE** · Créée par **Jean Emmanuel Ahossi** — [portfolio](https://jeanemmanuel-portfolio-gamma.vercel.app/)
+
+## Tests
+
+Tests unitaires avec [Vitest](https://vitest.dev) (jsdom). Pas de build : `package.json` ne sert qu’aux tests.
+
+```bash
+npm install
+npm test
+```
+
+| Fichier | Ce qui est vérifié |
+| --- | --- |
+| `tests/store.test.js` | Connexion, badge vérifié réservé à l’administrateur (modérateurs en lecture seule), conditions du badge (actif + 1 000 rires, anonymes exclus, seuils réglables), sanctions, suppression de compte, masquage/révélation d’auteur, signalements, stickers retirés, mots interdits, règles, annonces, données personnelles, journal d’audit |
+| `tests/migrations.test.js` | Passage aux nouvelles règles du badge et session gardée après rechargement |

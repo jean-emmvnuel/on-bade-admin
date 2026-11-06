@@ -1,0 +1,14 @@
+{
+  "name": "on-bade-admin",
+  "private": true,
+  "type": "module",
+  "description": "On Bade — back-office. Pas de build : servi tel quel ; ce fichier ne sert qu'aux tests.",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "jsdom": "^25.0.1",
+    "vitest": "^2.1.8"
+  }
+}
