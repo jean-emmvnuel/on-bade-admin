@@ -151,7 +151,7 @@ function seed() {
   return {
     v: 2, session: null, users, badings, comments, customStickers, reports, badgeRequests, dataRequests, daily,
     bannedWords: ['connard', 'pute', 'nègre', 'tuer', 'sale race', 'arnaque garantie'],
-    rules: { minLength: 10, maxLength: 1000, captionMax: 280, myStickersMax: 50, opinionMax: 280, commentMax: 500, dailyLimit: 20, maxMentions: 5, autoHideThreshold: 5, badgeActiveDays: 30, badgeMinLaughs: 1000, badgeRetryDays: 30, deletionDays: 30 },
+    rules: { minLength: 10, maxLength: 1000, captionMax: 280, myStickersMax: 1000, opinionMax: 280, commentMax: 500, dailyLimit: 20, maxMentions: 5, autoHideThreshold: 5, badgeActiveDays: 30, badgeMinLaughs: 1000, badgeRetryDays: 30, deletionDays: 30 },
     platform: { signupsOpen: true, anonymousEnabled: true, commentsEnabled: true, maintenance: false, maintenanceMessage: 'On Bade fait une petite pause, on revient vite 😅' },
     announcements: [{ id: 'a1', title: 'Bienvenue sur On Bade 🎉', body: 'Raconte ta galère du jour et fais rire le pays.', audience: 'all', sentAt: now - 25 * D, by: 'admin', reach: 1240 }],
     audit: [
@@ -168,6 +168,8 @@ try { state = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { state =
 // Nouvelle version des données (images et stickers) : on régénère la démo en gardant la session.
 if (state.v !== 2) { const session = state.session ?? null; state = seed(); state.session = session; }
 // Nouvelles règles du badge (actif + 1 000 rires) sans perdre les données en place.
+// Collections de stickers : la limite passe de 50 à 1 000.
+if (state.rules.myStickersMax === 50) state.rules.myStickersMax = 1000;
 if (!('badgeMinLaughs' in state.rules)) { state.rules.badgeActiveDays = 30; state.rules.badgeMinLaughs = 1000; delete state.rules.badgeMinAgeDays; delete state.rules.badgeMinBadings; }
 
 const listeners = new Set();

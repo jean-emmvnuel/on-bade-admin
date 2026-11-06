@@ -13,7 +13,7 @@ export function stickersView(root, { query, go }) {
   const openReports = list.reduce((n, x) => n + x.reports.filter((r) => r.status === 'open').length, 0);
 
   root.innerHTML = `
-    ${pageHead('Stickers', `Comme sur TikTok, chaque Badeur crée ses stickers et enregistre ceux des autres (${st.rules.myStickersMax} max par collection). Un sticker retiré disparaît des collections et s’affiche « retiré » dans les commentaires.`)}
+    ${pageHead('Stickers', `Comme sur TikTok, chaque Badeur crée ses stickers et enregistre ceux des autres (jusqu’à ${S.compact(st.rules.myStickersMax)} par collection). Un sticker retiré disparaît des collections et s’affiche « retiré » dans les commentaires.`)}
     <div class="tabs" role="tablist" data-enter>
       <a role="tab" href="#/stickers?tab=custom" aria-selected="${tab === 'custom'}">Créés par les Badeurs (${list.length})${openReports ? ` <b class="count">${openReports}</b>` : ''}</a>
       <a role="tab" href="#/stickers?tab=builtin" aria-selected="${tab === 'builtin'}">Bibliothèque On Bade (${STICKERS.length})</a>

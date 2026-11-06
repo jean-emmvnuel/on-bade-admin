@@ -17,6 +17,13 @@ describe('Données gardées dans le navigateur', () => {
     expect(S.get().rules.badgeMinAgeDays).toBeUndefined();
     expect(S.me()?.id).toBe('admin');
   });
+  it('la limite des collections de stickers passe de 50 à 1 000', async () => {
+    let S = await load();
+    const old = JSON.parse(JSON.stringify(S.get())); old.rules.myStickersMax = 50;
+    localStorage.setItem(KEY, JSON.stringify(old));
+    S = await load();
+    expect(S.get().rules.myStickersMax).toBe(1000);
+  });
   it('la session survit à un rechargement', async () => {
     let S = await load();
     S.get().session = { userId: 'admin', at: 1 }; S.setPlatform('maintenance', true);
