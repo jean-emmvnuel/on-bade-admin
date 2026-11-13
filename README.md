@@ -1,6 +1,6 @@
 # On Bade — Administration
 
-Le back-office de **On Bade**, écrit en **HTML, CSS et JavaScript natif**, animé avec **GSAP**. Même identité que l'app et le site.
+Le back-office de **On Bade**, écrit en **React** (Vite, React Router), animé avec **GSAP**. Même identité que l'app et le site.
 
 L'administrateur a **tous les accès** ; chaque action est inscrite au **journal d'audit**.
 
@@ -24,24 +24,32 @@ L'administrateur a **tous les accès** ; chaque action est inscrite au **journal
 ## Lancer
 
 ```bash
-python3 -m http.server 5175
+npm install
+npm run dev        # http://localhost:5175
 ```
 
-Puis ouvre <http://localhost:5175>. Connexion de démo : `admin@jebade.app` / `JeBade2026!`.
+Connexion de démo : `admin@jebade.app` / `JeBade2026!`.
 
-Les données sont simulées et gardées dans le navigateur (`localStorage`) en attendant l'API (routes `/admin/*` de `BACKEND.md` dans le dépôt mobile). Pour repartir de zéro : Paramètres › Réinitialiser les données de démo.
+Sur `localhost`, les données sont simulées et gardées dans le navigateur (`localStorage`). Une fois publié, le back-office lit l'API (`src/lib/api.js`) ; `?demo=1` ou `?demo=0` dans l'adresse force un mode. Pour repartir de zéro en démo : Paramètres › Réinitialiser les données de démo.
+
+Mise en ligne : `npm run build` produit le dossier `dist/`, à servir tel quel (chemins relatifs, routes en `#/…` : aucun réglage serveur).
 
 ## Structure
 
 ```
-index.html          ← coquille, chargement de GSAP
-css/admin.css       ← tokens (identiques à l'app), mise en page, composants
-js/app.js           ← routeur (hash), barre latérale, recherche globale
-js/store.js         ← données de démo + actions d'administration (→ API plus tard) + journal d'audit
-js/actions.js       ← actions partagées : sanctions, levée d'anonymat, menus
-js/ui.js            ← icônes, fenêtres, confirmations avec motif, graphiques SVG, animations GSAP
-js/stickers.js      ← bibliothèque de stickers (copie de celle du site et de l'app)
-js/views/*.js       ← un fichier par écran
+index.html                 ← coquille Vite
+src/main.jsx               ← démarrage (HashRouter)
+src/App.jsx                ← routes, garde de connexion, chargement des données, barre latérale, recherche globale
+src/actions.jsx            ← actions partagées : sanctions, levée d'anonymat, menus bading / commentaire / utilisateur
+src/components/ui.jsx      ← icônes, avatars, pastilles, tableaux, graphiques SVG, stickers
+src/components/overlays.jsx← fenêtres, confirmations avec motif, menus, toasts (API par promesses : confirmAction(), menu())
+src/views/*.jsx            ← un fichier par écran
+src/lib/store.js           ← données de démo + actions d'administration + journal d'audit (sans React)
+src/lib/api.js, server.js  ← client de l'API et conversion des réponses
+src/lib/useStore.js        ← abonnement des composants au store (useSyncExternalStore)
+src/lib/useQuery.js        ← filtres gardés dans l'adresse (#/badings?status=hidden)
+src/styles/admin.css       ← tokens (identiques à l'app), mise en page, composants
+public/assets/             ← favicons et icônes
 ```
 
 ---
@@ -50,7 +58,7 @@ js/views/*.js       ← un fichier par écran
 
 ## Tests
 
-Tests unitaires avec [Vitest](https://vitest.dev) (jsdom). Pas de build : `package.json` ne sert qu’aux tests.
+Tests unitaires avec [Vitest](https://vitest.dev) (jsdom).
 
 ```bash
 npm install
@@ -61,10 +69,11 @@ npm test
 | --- | --- |
 | `tests/store.test.js` | Connexion, badge vérifié réservé à l’administrateur (modérateurs en lecture seule), conditions du badge (actif + 1 000 rires, anonymes exclus, seuils réglables), sanctions, suppression de compte, masquage/révélation d’auteur, signalements, stickers retirés, mots interdits, règles, annonces, données personnelles, journal d’audit |
 | `tests/migrations.test.js` | Passage aux nouvelles règles du badge et session gardée après rechargement |
+| `tests/server.test.js` | Conversion des réponses de l’API (`/api/admin`) vers la forme des écrans |
 
 ### Tests de bout en bout (Playwright)
 
-Un vrai navigateur ouvre le back-office et clique dans les pages, sur ordinateur et sur téléphone (Pixel 7).
+Un vrai navigateur ouvre le back-office (serveur Vite lancé automatiquement) et clique dans les pages, sur ordinateur et sur téléphone (Pixel 7).
 
 ```bash
 npx playwright install chromium   # une seule fois

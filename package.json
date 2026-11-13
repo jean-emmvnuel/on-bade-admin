@@ -2,8 +2,11 @@
   "name": "on-bade-admin",
   "private": true,
   "type": "module",
-  "description": "On Bade — back-office. Pas de build : servi tel quel ; ce fichier ne sert qu'aux tests.",
+  "description": "On Bade — back-office (React + Vite).",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
@@ -12,7 +15,15 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.65.0",
+    "@vitejs/plugin-react": "^4.3.4",
     "jsdom": "^25.0.1",
+    "vite": "^5.4.11",
     "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "gsap": "^3.13.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0"
   }
 }

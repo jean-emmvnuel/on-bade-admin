@@ -1,6 +1,13 @@
-// Données de la plateforme + actions d'administration (maquette locale).
-// Chaque action correspond à une route /admin/* de BACKEND.md : remplacer le corps par un appel API.
-// Toutes les actions sont inscrites dans le journal d'audit.
+// Données de la plateforme + actions d'administration.
+// Avec l'API (BACKEND, voir api.js) : les données viennent de /api/admin/* (server.js) et chaque action
+// est envoyée au serveur ; en cas de refus, un toast l'explique et les données sont rechargées.
+// En démo (localhost, tests) : tout est simulé dans le navigateur et inscrit au journal d'audit local.
+import * as api from './api.js';
+import { BACKEND, errorMessage } from './api.js';
+import * as server from './server.js';
+import { toast } from './toast.js';
+
+export { BACKEND };
 
 const MIN = 60_000, H = 60 * MIN, D = 24 * H;
 const KEY = 'jebade-admin-v1';
@@ -65,6 +72,14 @@ const DEMO_STICKERS = {
   us3: { ownerId: 'u6', label: "Yop City", src: "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Crect%20x%3D%2216%22%20y%3D%2216%22%20width%3D%22480%22%20height%3D%22480%22%20rx%3D%2296%22%20fill%3D%22%239810e6%22/%3E%3Crect%20x%3D%2270%22%20y%3D%22250%22%20width%3D%2270%22%20height%3D%22170%22%20fill%3D%22%23ede3fa%22/%3E%3Crect%20x%3D%22155%22%20y%3D%22190%22%20width%3D%2280%22%20height%3D%22230%22%20fill%3D%22%23ffffff%22/%3E%3Crect%20x%3D%22250%22%20y%3D%22230%22%20width%3D%2270%22%20height%3D%22190%22%20fill%3D%22%23ede3fa%22/%3E%3Crect%20x%3D%22335%22%20y%3D%22170%22%20width%3D%2290%22%20height%3D%22250%22%20fill%3D%22%23ffffff%22/%3E%3Ccircle%20cx%3D%22390%22%20cy%3D%22105%22%20r%3D%2242%22%20fill%3D%22%23ffb547%22/%3E%3Ctext%20x%3D%22256%22%20y%3D%22130%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%20Black%2C%20Arial%2C%20sans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2274%22%20fill%3D%22%23ffffff%22%3EYOP%3C/text%3E%3Ctext%20x%3D%22256%22%20y%3D%22480%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%20Black%2C%20Arial%2C%20sans-serif%22%20font-weight%3D%22900%22%20font-size%3D%2254%22%20fill%3D%22%23ffffff%22%3ECITY%3C/text%3E%3C/svg%3E" },
   us4: { ownerId: 'u29', label: 'Konan le nul', src: "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Crect%20x%3D%2216%22%20y%3D%2216%22%20width%3D%22480%22%20height%3D%22480%22%20rx%3D%2296%22%20fill%3D%22%235ab0ff%22/%3E%3Ccircle%20cx%3D%22256%22%20cy%3D%22220%22%20r%3D%22120%22%20fill%3D%22%238a5a3a%22/%3E%3Crect%20x%3D%22150%22%20y%3D%22320%22%20width%3D%22212%22%20height%3D%22140%22%20rx%3D%2240%22%20fill%3D%22%232d6cdf%22/%3E%3Ctext%20x%3D%22256%22%20y%3D%22110%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%20Black%2C%20Arial%22%20font-size%3D%2248%22%20fill%3D%22%231a1919%22%3EKONAN%20LE%20NUL%3C/text%3E%3C/svg%3E" },
 };
+
+const DEFAULT_RULES = { minLength: 10, maxLength: 1000, captionMax: 280, myStickersMax: 1000, opinionMax: 280, commentMax: 500, dailyLimit: 20, maxMentions: 5, autoHideThreshold: 5, badgeActiveDays: 30, badgeMinLaughs: 1000, badgeRetryDays: 30, deletionDays: 30 };
+const DEFAULT_PLATFORM = { signupsOpen: true, anonymousEnabled: true, commentsEnabled: true, maintenance: false, maintenanceMessage: 'On Bade fait une petite pause, on revient vite 😅', adminMfaRequired: false };
+
+/** État vide, rempli par l'API (server.loadAll). */
+function emptyState(session = null) {
+  return { v: 2, session, loaded: false, stats: null, users: {}, badings: [], comments: [], customStickers: {}, reports: [], badgeRequests: [], dataRequests: [], daily: [], admins: [], bannedWords: [], rules: { ...DEFAULT_RULES }, platform: { ...DEFAULT_PLATFORM }, announcements: [], audit: [] };
+}
 
 function seed() {
   const r = rng(225), now = Date.now();
@@ -151,8 +166,8 @@ function seed() {
   return {
     v: 2, session: null, users, badings, comments, customStickers, reports, badgeRequests, dataRequests, daily,
     bannedWords: ['connard', 'pute', 'nègre', 'tuer', 'sale race', 'arnaque garantie'],
-    rules: { minLength: 10, maxLength: 1000, captionMax: 280, myStickersMax: 1000, opinionMax: 280, commentMax: 500, dailyLimit: 20, maxMentions: 5, autoHideThreshold: 5, badgeActiveDays: 30, badgeMinLaughs: 1000, badgeRetryDays: 30, deletionDays: 30 },
-    platform: { signupsOpen: true, anonymousEnabled: true, commentsEnabled: true, maintenance: false, maintenanceMessage: 'On Bade fait une petite pause, on revient vite 😅' },
+    rules: { ...DEFAULT_RULES },
+    platform: { ...DEFAULT_PLATFORM },
     announcements: [{ id: 'a1', title: 'Bienvenue sur On Bade 🎉', body: 'Raconte ta galère du jour et fais rire le pays.', audience: 'all', sentAt: now - 25 * D, by: 'admin', reach: 1240 }],
     audit: [
       { id: 'l3', at: now - 3 * D, actor: 'admin', action: 'user.sanction', target: 'u12', detail: 'Suspension 7 jours : Harcèlement répété en commentaires' },
@@ -163,33 +178,117 @@ function seed() {
 }
 
 // ─── État ──────────────────────────────────────────────────
+const SESSION_KEY = 'onbade-admin-session';
 let state;
-try { state = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { state = seed(); }
-// Nouvelle version des données (images et stickers) : on régénère la démo en gardant la session.
-if (state.v !== 2) { const session = state.session ?? null; state = seed(); state.session = session; }
-// Nouvelles règles du badge (actif + 1 000 rires) sans perdre les données en place.
-// Collections de stickers : la limite passe de 50 à 1 000.
-if (state.rules.myStickersMax === 50) state.rules.myStickersMax = 1000;
-if (!('badgeMinLaughs' in state.rules)) { state.rules.badgeActiveDays = 30; state.rules.badgeMinLaughs = 1000; delete state.rules.badgeMinAgeDays; delete state.rules.badgeMinBadings; }
+if (BACKEND) {
+  // Seule la session est gardée dans le navigateur ; les données sont relues sur le serveur.
+  let session = null;
+  try { session = api.getToken() ? JSON.parse(localStorage.getItem(SESSION_KEY)) : null; } catch {}
+  state = emptyState(session);
+} else {
+  try { state = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { state = seed(); }
+  // Nouvelle version des données (images et stickers) : on régénère la démo en gardant la session.
+  if (state.v !== 2) { const session = state.session ?? null; state = seed(); state.session = session; }
+  // Nouvelles règles du badge (actif + 1 000 rires) sans perdre les données en place.
+  // Collections de stickers : la limite passe de 50 à 1 000.
+  if (state.rules.myStickersMax === 50) state.rules.myStickersMax = 1000;
+  if (!('badgeMinLaughs' in state.rules)) { state.rules.badgeActiveDays = 30; state.rules.badgeMinLaughs = 1000; delete state.rules.badgeMinAgeDays; delete state.rules.badgeMinBadings; }
+}
 
 const listeners = new Set();
-let saveTimer;
+let saveTimer, version = 0;
+/** Numéro de version de l'état : change à chaque modification (React s'y abonne via useSyncExternalStore). */
+export const getVersion = () => version;
 function commit() {
+  version += 1;
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} }, 120);
+  saveTimer = setTimeout(() => {
+    try {
+      if (BACKEND) localStorage.setItem(SESSION_KEY, JSON.stringify(state.session));
+      else localStorage.setItem(KEY, JSON.stringify(state));
+    } catch {}
+  }, 120);
   listeners.forEach((fn) => fn(state));
+}
+
+/**
+ * Fonctions disponibles. Avec l'API, seules celles que le serveur sait faire sont proposées
+ * (les autres écrans et boutons sont masqués).
+ */
+const SERVER_FEATURES = new Set(['reports', 'badings', 'users', 'badges', 'data', 'settings', 'block', 'verify', 'role', 'passwordReset', 'deleteContent',
+  'comments', 'stickers', 'moderation', 'announcements', 'audit', 'warning', 'hide', 'reveal', 'pseudo', 'deleteUser', 'restoreComment', 'dataProcess',
+  'pin', 'message', 'export', 'security']);
+/** Fonctions réservées aux administrateurs « tous les droits » (permission ALL) côté serveur. */
+const ALL_ONLY = new Set(['reveal', 'deleteUser', 'dataProcess', 'export']);
+export const can = (feature) => !BACKEND || (SERVER_FEATURES.has(feature) && (!ALL_ONLY.has(feature) || me()?.permission === 'ALL'));
+
+// ─── Chargement depuis l'API ──────────────────────────────
+let loading = null;
+export const isLoaded = () => !BACKEND || state.loaded;
+/** Charge les données du serveur (une seule fois, sauf `force`). */
+export function ensureLoaded(force = false) {
+  if (!BACKEND) return Promise.resolve();
+  if (!loading || force) {
+    loading = server.loadAll().then((data) => { Object.assign(state, data); commit(); }).catch((e) => { loading = null; throw e; });
+  }
+  return loading;
+}
+/**
+ * Envoie une action au serveur (`call` n'est appelé qu'avec l'API). L'écran a déjà été mis à jour : en cas de refus, on prévient
+ * et on recharge les vraies données.
+ */
+function remote(call) {
+  if (!BACKEND) return Promise.resolve(true);
+  return Promise.resolve().then(call).then(() => { refreshAudit(); return true; }, (e) => {
+    toast(errorMessage(e, 'L’action n’a pas pu être enregistrée.'), 'bad');
+    ensureLoaded(true).catch(() => {});
+    return false;
+  });
+}
+/** Relit le journal d'audit du serveur (après chaque action réussie : c'est lui qui l'écrit). */
+let auditTimer;
+export function refreshAudit() {
+  if (!BACKEND) return;
+  clearTimeout(auditTimer);
+  auditTimer = setTimeout(() => { server.loadAudit().then((audit) => { state.audit = audit; commit(); }).catch(() => {}); }, 300);
+}
+const loadedDetails = new Set();
+/** Commentaires d'un bading (chargés à la première ouverture de son détail). */
+export async function loadBadingDetail(id) {
+  if (!BACKEND || loadedDetails.has(`b:${id}`)) return false;
+  loadedDetails.add(`b:${id}`);
+  const { bading: b, comments, users: people } = await server.loadBading(id);
+  people.forEach((u) => { if (!state.users[u.id]) state.users[u.id] = u; });
+  const known = bading(id);
+  if (known) Object.assign(known, { ...b, rebades: known.rebades, authorId: known.authorId ?? b.authorId });
+  else state.badings.push(b);
+  state.comments = state.comments.filter((c) => c.badingId !== id).concat(comments);
+  commit();
+  return true;
+}
+/** Fiche complète d'un utilisateur (historique des blocages). */
+export async function loadUserDetail(id) {
+  if (!BACKEND || loadedDetails.has(`u:${id}`)) return false;
+  loadedDetails.add(`u:${id}`);
+  state.users[id] = { ...state.users[id], ...(await server.loadUser(id)) };
+  commit();
+  return true;
 }
 export const subscribe = (fn) => (listeners.add(fn), () => listeners.delete(fn));
 export const get = () => state;
-export function resetDemo() { const s = state.session; state = seed(); state.session = s; log('platform.reset', null, 'Données de démo réinitialisées'); }
+export function resetDemo() { const s = state.session; state = seed(); state.session = s; loadedDetails.clear(); log('platform.reset', null, 'Données de démo réinitialisées'); }
 
 function log(action, target, detail) {
+  // Avec l'API, c'est le serveur qui tient le journal (relu par refreshAudit après chaque action).
+  if (BACKEND) { commit(); return; }
   state.audit.unshift({ id: `l${Date.now()}${Math.random().toString(36).slice(2, 5)}`, at: Date.now(), actor: state.session?.userId ?? 'system', action, target, detail });
   commit();
 }
 
 // ─── Lecture ───────────────────────────────────────────────
-export const me = () => (state.session ? state.users[state.session.userId] : null);
+/** Auteur d'une action : un utilisateur, ou un administrateur (identifiant de la table des admins côté serveur). */
+export const actor = (id) => state.users[id] ?? state.users[state.admins?.find((a) => a.id === id)?.user?.id];
+export const me = () => (state.session ? state.users[state.session.userId] ?? state.session.user ?? null : null);
 export const user = (id) => state.users[id];
 export const bading = (id) => state.badings.find((b) => b.id === id);
 export const comment = (id) => state.comments.find((c) => c.id === id);
@@ -201,7 +300,7 @@ export const commentsOf = (badingId) => state.comments.filter((c) => c.badingId 
 export const badingsOf = (userId) => state.badings.filter((b) => b.authorId === userId);
 export const reportsOn = (type, id) => state.reports.filter((r) => r.targetType === type && r.targetId === id);
 export const customSticker = (id) => state.customStickers?.[id];
-export const stickerUses = (id) => state.comments.filter((c) => c.sticker === id && c.status !== 'deleted').length;
+export const stickerUses = (id) => state.customStickers?.[id]?.uses ?? state.comments.filter((c) => c.sticker === id && c.status !== 'deleted').length;
 export function targetLabel(type, id) {
   if (type === 'bading') return `Bading ${id}`;
   if (type === 'comment') return `Commentaire ${id}`;
@@ -212,20 +311,106 @@ export function targetLabel(type, id) {
 
 // ─── Connexion admin ───────────────────────────────────────
 async function sha(s) { return [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map((b) => b.toString(16).padStart(2, '0')).join(''); }
+/** Connexion. Renvoie true, false (identifiants faux) ou 'forbidden' (compte sans accès au back-office). */
 export async function logIn(email, password) {
   const e = email.trim().toLowerCase();
+  if (BACKEND) {
+    let res;
+    try {
+      res = await api.login(e, password);
+    } catch (err) {
+      if ([400, 401, 404].includes(err.status) && err.code !== 'account_blocked') return false;
+      throw err;
+    }
+    api.setToken(res.token);
+    pendingLogin = { user: res.user, email: e };
+    // Double authentification activée : le code est demandé avant tout accès (Login → verifyMfa).
+    if (res.mfaRequired) return 'mfa';
+    return finishLogin();
+  }
   const u = Object.values(state.users).find((x) => x.email === e && (x.role === 'admin' || x.role === 'moderator'));
   if (!u || u.id !== 'admin' || (await sha(`jebade-admin:${e}:${password}`)) !== ADMIN_HASH) return false;
   state.session = { userId: u.id, at: Date.now() };
   log('auth.login', u.id, 'Connexion au back-office');
   return true;
 }
-export function logOut() { log('auth.logout', state.session?.userId, 'Déconnexion'); state.session = null; commit(); }
+// ─── Double authentification ───────────────────────────────
+let pendingLogin = null;
+/** Vérifie que le compte connecté fait partie de l'équipe et ouvre la session. */
+async function finishLogin() {
+  const { user: account, email } = pendingLogin ?? {};
+  if (!account) return false;
+  let admin = null;
+  try {
+    const { admins = [] } = await api.getAdmins();
+    admin = admins.find((a) => a.user?.id === account.id);
+  } catch (err) {
+    // L'équipe impose la double authentification et ce compte ne l'a pas encore configurée.
+    if (err.code === 'mfa_setup_required') return 'mfa-setup';
+    if (err.status !== 403) { api.setToken(null); throw err; }
+  }
+  if (!admin) { api.logout().catch(() => {}); api.setToken(null); pendingLogin = null; return 'forbidden'; }
+  const user = { ...server.fromBriefUser(account), email: account.email ?? email, role: server.roleOf(admin.permission), adminId: admin.id, permission: admin.permission };
+  state = emptyState({ userId: user.id, at: Date.now(), user });
+  loading = null; loadedDetails.clear(); pendingLogin = null;
+  commit();
+  return true;
+}
+/** Étape 2 de la connexion : code à 6 chiffres. Renvoie le même résultat que logIn, ou 'bad-code'. */
+export async function verifyMfa(code) {
+  try {
+    const { token } = await api.mfaVerify(code.trim());
+    api.setToken(token);
+  } catch (err) {
+    if (err.code === 'invalid_code') return 'bad-code';
+    throw err;
+  }
+  return finishLogin();
+}
+/** Configuration de la double authentification (premier passage, ou depuis Paramètres). */
+export const startMfaSetup = () => api.mfaSetup();
+export async function enableMfa(code, { duringLogin = false } = {}) {
+  try {
+    const { token } = await api.mfaEnable(code.trim());
+    api.setToken(token);
+  } catch (err) {
+    if (err.code === 'invalid_code') return 'bad-code';
+    throw err;
+  }
+  refreshAudit();
+  return duringLogin ? finishLogin() : true;
+}
+export async function disableMfa(code) {
+  try { await api.mfaDisable(code.trim()); } catch (err) { if (err.code === 'invalid_code') return 'bad-code'; throw err; }
+  refreshAudit();
+  return true;
+}
+export const mfaStatus = () => api.getMfa();
+export const loginHistory = (query) => api.getLogins(query);
+export function resetMemberMfa(adminId) {
+  const a = state.admins.find((x) => x.id === adminId); if (a) a.mfaEnabled = false;
+  commit();
+  return remote(() => api.resetAdminMfa(adminId));
+}
+
+export function logOut() {
+  if (BACKEND) {
+    if (api.getToken()) api.logout().catch(() => {});
+    api.setToken(null);
+    state = emptyState(); loading = null; loadedDetails.clear();
+    commit();
+    return;
+  }
+  log('auth.logout', state.session?.userId, 'Déconnexion'); state.session = null; commit();
+}
+// Session expirée ou révoquée côté serveur : retour à la connexion.
+api.setUnauthorizedHandler(() => { state = emptyState(); loading = null; loadedDetails.clear(); commit(); location.hash = '#/login'; });
 
 // ─── Signalements ──────────────────────────────────────────
 export function resolveReports(reportIds, status, decision) {
   state.reports.forEach((r) => { if (reportIds.includes(r.id)) Object.assign(r, { status, decision, resolvedBy: state.session.userId, resolvedAt: Date.now() }); });
   log('report.resolve', reportIds.join(', '), `${status === 'dismissed' ? 'Classé sans suite' : 'Traité'} : ${decision}`);
+  return remote(() => Promise.all(reportIds.map((id) => api.setReportStatus(id, status === 'dismissed' ? 'dismissed' : 'resolved'))));
 }
 
 // ─── Badings ───────────────────────────────────────────────
@@ -233,10 +418,39 @@ export function setBadingStatus(id, status, reason = '') {
   const b = bading(id); if (!b) return;
   b.status = status; b.hiddenReason = status === 'hidden' ? reason : undefined; b.moderatedAt = Date.now();
   log(`bading.${status === 'visible' ? 'restore' : status === 'hidden' ? 'hide' : 'delete'}`, id, reason || (status === 'visible' ? 'Rétabli' : ''));
+  if (!BACKEND) return;
+  // Masquer ou supprimer clôt aussi, côté serveur, les signalements en attente sur ce bading.
+  if (status !== 'visible') {
+    state.reports.forEach((r) => { if (r.targetType === 'bading' && r.targetId === id && r.status === 'open') Object.assign(r, { status: 'actioned', resolvedAt: Date.now() }); });
+    b.reportsCount = 0;
+  }
+  return remote(() => (status === 'deleted' ? api.deleteBading(id, reason) : api.setBadingStatus(id, status, reason)));
+}
+/** Épingle un bading en tête du fil (« bading du jour »). `until` : fin en ms, sinon jusqu'au retrait. */
+export function pinBading(id, { until, label } = {}) {
+  const b = bading(id); if (!b) return;
+  b.pinned = { at: Date.now(), until: until ?? null, label: label || null };
+  log('bading.pin', id, `Épinglé${label ? ` (« ${label} »)` : ''}`);
+  return remote(() => api.pinBading(id, { until, label }));
+}
+export function unpinBading(id) {
+  const b = bading(id); if (!b) return;
+  b.pinned = null;
+  log('bading.unpin', id, 'Épinglage retiré');
+  return remote(() => api.unpinBading(id));
 }
 /** Coffre d'anonymat : révèle l'auteur d'un bading anonyme. Motif obligatoire, toujours journalisé. */
 export function revealAuthor(id, reason) {
   const b = bading(id); if (!b) return null;
+  if (BACKEND) {
+    // Le serveur vérifie les droits (ALL), journalise et renvoie l'auteur.
+    return api.revealAuthor(id, reason).then(({ user: who }) => {
+      if (!state.users[who.id]) state.users[who.id] = server.fromBriefUser(who);
+      b.authorId = who.id;
+      refreshAudit(); commit();
+      return state.users[who.id];
+    }, (e) => { toast(errorMessage(e, 'Révélation impossible.'), 'bad'); return null; });
+  }
   log('vault.reveal', id, `Auteur révélé (@${state.users[b.authorId]?.pseudo}) — motif : ${reason}`);
   return state.users[b.authorId];
 }
@@ -246,6 +460,8 @@ export function setCommentStatus(id, status, reason = '') {
   const c = comment(id); if (!c) return;
   c.status = status;
   log(status === 'deleted' ? 'comment.delete' : 'comment.restore', id, reason);
+  // Serveur : « supprimer » masque le commentaire (réversible), « rétablir » le rend visible.
+  if (BACKEND) return remote(() => api.setCommentStatus(id, status === 'deleted' ? 'hidden' : 'visible', reason || undefined));
 }
 
 // ─── Stickers personnels ───────────────────────────────────
@@ -254,6 +470,7 @@ export function setStickerStatus(id, status, reason = '') {
   const st = state.customStickers?.[id]; if (!st) return;
   st.status = status;
   log(status === 'removed' ? 'sticker.remove' : 'sticker.restore', id, `${st.label ? `« ${st.label} »` : id} de @${state.users[st.ownerId]?.pseudo ?? '?'}${reason ? ` : ${reason}` : ''}`);
+  if (BACKEND) return remote(() => api.setStickerStatus(id, status === 'removed' ? 'removed' : 'active', status === 'removed' ? reason : undefined));
 }
 
 // ─── Utilisateurs ──────────────────────────────────────────
@@ -263,14 +480,18 @@ export function sanction(userId, level, reason) {
   if (level === 2) { u.status = 'suspended'; u.suspendedUntil = Date.now() + 7 * D; }
   if (level === 3) { u.status = 'banned'; u.suspendedUntil = undefined; }
   log('user.sanction', userId, `${SANCTIONS[level]} : ${reason}`);
+  // Serveur : avertissement (niveau 1), blocage de 7 jours (niveau 2) ou sans fin (niveau 3).
+  if (BACKEND && level === 1) return remote(() => api.warnUser(userId, reason));
+  if (BACKEND) return remote(() => api.blockUser(userId, reason, level === 2 ? u.suspendedUntil : undefined));
 }
 export function liftSanction(userId) {
   const u = user(userId); if (!u) return;
   u.status = 'active'; u.suspendedUntil = undefined;
   log('user.unsanction', userId, 'Sanction levée, compte réactivé');
+  return remote(() => api.unblockUser(userId));
 }
 /** Le badge vérifié ne s'attribue, ne se retire et ne se valide que par un administrateur (pas les modérateurs). */
-export const canManageBadges = () => me()?.role === 'admin';
+export const canManageBadges = () => (BACKEND ? ['WRITE', 'READWRITE', 'ALL'].includes(me()?.permission) : me()?.role === 'admin');
 /**
  * Conditions pour qu'un Badeur puisse demander le badge : actif (un bading signé ces N derniers jours)
  * et au moins 1 000 rires reçus sur ses badings signés. Les badings anonymes ne comptent jamais.
@@ -285,16 +506,53 @@ export function badgeEligibility(userId) {
 }
 export function setVerified(userId, v) { if (!canManageBadges()) return false; const u = user(userId); if (!u) return false; u.verified = v;
   // Attribuer directement clôt une éventuelle demande en attente.
-  if (v) state.badgeRequests.filter((g) => g.userId === userId && g.status === 'pending').forEach((g) => Object.assign(g, { status: 'accepted', decidedAt: Date.now() })); log(v ? 'badge.grant' : 'badge.revoke', userId, v ? 'Badge vérifié attribué' : 'Badge vérifié retiré'); }
-export function setRole(userId, role) { const u = user(userId); if (!u) return; const old = u.role; u.role = role; log('user.role', userId, `${ROLES[old]} → ${ROLES[role]}`); }
-export function setPseudo(userId, pseudo) { const u = user(userId); if (!u) return; const old = u.pseudo; u.pseudo = pseudo; u.verified = false; log('user.pseudo', userId, `@${old} → @${pseudo} (badge retiré)`); }
-export function sendPasswordReset(userId) { const u = user(userId); log('user.password_reset', userId, `Lien de réinitialisation envoyé à ${u?.email}`); }
-export function deleteUser(userId, reason) {
-  const u = user(userId); if (!u) return;
+  if (v) state.badgeRequests.filter((g) => g.userId === userId && g.status === 'pending').forEach((g) => Object.assign(g, { status: 'accepted', decidedAt: Date.now() })); log(v ? 'badge.grant' : 'badge.revoke', userId, v ? 'Badge vérifié attribué' : 'Badge vérifié retiré'); return remote(() => api.setVerified(userId, v)); }
+export function setRole(userId, role) {
+  const u = user(userId); if (!u) return; const old = u.role; u.role = role; log('user.role', userId, `${ROLES[old]} → ${ROLES[role]}`);
+  if (!BACKEND) return;
+  // Serveur : administrateur = permission ALL, modérateur = READWRITE, utilisateur = retiré de l'équipe.
+  const permission = server.permissionOf(role);
+  const call = !permission ? api.removeAdmin(u.adminId)
+    : u.adminId ? api.setAdminPermission(u.adminId, permission)
+    : api.addAdmin(u.id, permission).then(({ admin }) => { u.adminId = admin?.id; });
+  u.permission = permission ?? undefined;
+  if (!permission) u.adminId = undefined;
+  return remote(() => call);
+}
+export function setPseudo(userId, pseudo) {
+  const u = user(userId); if (!u) return; const old = u.pseudo; u.pseudo = pseudo; u.verified = false; log('user.pseudo', userId, `@${old} → @${pseudo} (badge retiré)`);
+  if (BACKEND) return remote(() => api.renameUser(userId, pseudo));
+}
+/**
+ * Lien de réinitialisation du mot de passe. Avec l'API, il est créé par le serveur et renvoyé ici
+ * (aucun e-mail n'est envoyé pour l'instant) : résout { url, expiresAt } ou null.
+ */
+export function sendPasswordReset(userId) {
+  const u = user(userId); log('user.password_reset', userId, `Lien de réinitialisation envoyé à ${u?.email}`);
+  if (!BACKEND) return Promise.resolve(null);
+  return api.createPasswordResetLink(userId).then((link) => { refreshAudit(); return link; }, (e) => { toast(errorMessage(e, 'Lien impossible à créer.'), 'bad'); return null; });
+}
+/** Message direct de l'équipe : notification « message de l'équipe » dans l'app. */
+export function messageUser(userId, title, text) {
+  const u = user(userId); log('user.message', userId, `Message à @${u?.pseudo} : « ${title || 'Message de l’équipe On Bade'} »`);
+  return remote(() => api.messageUser(userId, title, text));
+}
+/** Copie des données d'un compte (fichier JSON). Résout l'objet, ou null. */
+export function exportUserData(userId) {
+  if (!BACKEND) return Promise.resolve({ generatedAt: Date.now(), user: user(userId), badings: badingsOf(userId) });
+  return api.exportUser(userId).then((data) => { refreshAudit(); return data; }, (e) => { toast(errorMessage(e, 'Copie impossible.'), 'bad'); return null; });
+}
+function markDeleted(userId) {
+  const u = user(userId); if (!u) return null;
   u.status = 'deleted'; u.deletedAt = Date.now();
   state.badings.forEach((b) => { if (b.authorId === userId) b.status = 'deleted'; });
   state.comments.forEach((c) => { if (c.authorId === userId) c.status = 'deleted'; });
+  return u;
+}
+export function deleteUser(userId, reason) {
+  const u = markDeleted(userId); if (!u) return;
   log('user.delete', userId, `Compte @${u.pseudo} supprimé : ${reason}`);
+  if (BACKEND) return remote(() => api.deleteUser(userId, reason));
 }
 
 // ─── Badges ────────────────────────────────────────────────
@@ -304,12 +562,14 @@ export function decideBadge(id, accepted, reason = '') {
   Object.assign(g, { status: accepted ? 'accepted' : 'refused', reason: accepted ? undefined : reason, decidedAt: Date.now(), document: `${g.document} (supprimé après traitement)` });
   if (accepted && user(g.userId)) user(g.userId).verified = true;
   log('badge.decision', g.userId, accepted ? 'Demande acceptée' : `Demande refusée : ${reason}`);
+  return remote(() => api.decideVerification(id, accepted ? 'accepted' : 'refused', accepted ? undefined : reason));
 }
 
 // ─── Données personnelles ──────────────────────────────────
 export function processDataRequest(id) {
   const d = state.dataRequests.find((x) => x.id === id); if (!d) return;
   d.status = 'done'; d.doneAt = Date.now();
+  if (BACKEND) { markDeleted(d.userId); commit(); return remote(() => api.decideDataRequest(d.userId, 'process')); }
   if (d.type === 'deletion') deleteUser(d.userId, 'Demande de suppression de l\'utilisateur');
   log('data.process', d.userId, d.type === 'deletion' ? 'Suppression du compte effectuée' : 'Copie des données envoyée par e-mail');
 }
@@ -317,33 +577,59 @@ export function rejectDataRequest(id, reason) {
   const d = state.dataRequests.find((x) => x.id === id); if (!d) return;
   d.status = 'cancelled'; d.reason = reason;
   log('data.cancel', d.userId, `Demande annulée : ${reason}`);
+  if (BACKEND) return remote(() => api.decideDataRequest(d.userId, 'reject', reason));
 }
 
 // ─── Annonces ──────────────────────────────────────────────
+/** Nombre de personnes touchées par une annonce (aperçu avant envoi). */
+export function announcementReach(audience) {
+  if (BACKEND) return api.getAnnouncementReach(audience).then((r) => r.reach).catch(() => null);
+  return Promise.resolve(audience === 'all' ? users().filter((u) => u.status === 'active').length : audience === 'verified' ? users().filter((u) => u.verified).length : users().filter((u) => Date.now() - u.lastActiveAt > 7 * D).length);
+}
 export function sendAnnouncement({ title, body, audience }) {
+  if (BACKEND) {
+    return api.sendAnnouncement({ title, body, audience }).then(({ announcement: a }) => {
+      state.announcements.unshift(server.fromAnnouncement({ ...a, by: { id: state.session.userId } }));
+      refreshAudit(); commit();
+      return true;
+    }, (e) => { toast(errorMessage(e, 'Annonce non envoyée.'), 'bad'); return false; });
+  }
   const reach = audience === 'all' ? users().filter((u) => u.status === 'active').length : audience === 'verified' ? users().filter((u) => u.verified).length : users().filter((u) => Date.now() - u.lastActiveAt > 7 * D).length;
   state.announcements.unshift({ id: `a${Date.now()}`, title, body, audience, sentAt: Date.now(), by: state.session.userId, reach });
   log('announcement.send', null, `« ${title} » → ${reach} personnes`);
 }
 
 // ─── Modération et règles ──────────────────────────────────
-export function addBannedWord(w) { const word = w.trim().toLowerCase(); if (!word || state.bannedWords.includes(word)) return false; state.bannedWords.push(word); log('words.add', null, `Mot interdit ajouté : « ${word} »`); return true; }
-export function removeBannedWord(w) { state.bannedWords = state.bannedWords.filter((x) => x !== w); log('words.remove', null, `Mot interdit retiré : « ${w} »`); }
+/** Réglages : envoyés au serveur (qui valide les bornes et journalise) ; en cas de refus, toast et rechargement. */
+const saveSettings = (patch) => remote(() => api.saveSettings(patch));
+export function addBannedWord(w) {
+  const word = w.trim().toLowerCase(); if (!word || state.bannedWords.includes(word)) return false;
+  state.bannedWords.push(word); log('words.add', null, `Mot interdit ajouté : « ${word} »`);
+  if (BACKEND) saveSettings({ bannedWords: state.bannedWords });
+  return true;
+}
+export function removeBannedWord(w) {
+  state.bannedWords = state.bannedWords.filter((x) => x !== w); log('words.remove', null, `Mot interdit retiré : « ${w} »`);
+  if (BACKEND) return saveSettings({ bannedWords: state.bannedWords });
+}
 export function setRules(next) {
   const changes = Object.entries(next).filter(([k, v]) => state.rules[k] !== v).map(([k, v]) => `${k} ${state.rules[k]} → ${v}`);
   if (!changes.length) return 0;
   state.rules = { ...state.rules, ...next };
   log('rules.update', null, changes.join(' · '));
+  if (BACKEND) saveSettings({ rules: next });
   return changes.length;
 }
 export function setPlatform(key, value) {
   state.platform[key] = value;
-  const labels = { signupsOpen: 'Inscriptions', anonymousEnabled: 'Publication anonyme', commentsEnabled: 'Commentaires', maintenance: 'Mode maintenance' };
+  const labels = { signupsOpen: 'Inscriptions', anonymousEnabled: 'Publication anonyme', commentsEnabled: 'Commentaires', maintenance: 'Mode maintenance', adminMfaRequired: 'Double authentification obligatoire' };
   log('platform.update', null, typeof value === 'boolean' ? `${labels[key]} : ${value ? 'activé' : 'désactivé'}` : `${key} modifié`);
+  if (BACKEND) return saveSettings({ platform: { [key]: value } });
 }
 
 // ─── Formats ───────────────────────────────────────────────
 export function timeAgo(ts) {
+  if (!ts) return '—';
   const s = Math.max(0, Date.now() - ts);
   if (s < MIN) return "à l'instant"; if (s < H) return `il y a ${Math.floor(s / MIN)} min`;
   if (s < D) return `il y a ${Math.floor(s / H)} h`; if (s < 30 * D) return `il y a ${Math.floor(s / D)} j`;

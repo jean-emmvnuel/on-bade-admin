@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import * as S from '../js/store.js';
-import { stickerHtml } from '../js/stickers.js';
+import * as S from '../src/lib/store.js';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { Sticker } from '../src/components/ui.jsx';
+
+const stickerHtml = (id) => renderToStaticMarkup(createElement(Sticker, { id }));
 
 const D = 86_400_000;
 const as = (userId) => { S.get().session = { userId, at: Date.now() }; };
