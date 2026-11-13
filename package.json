@@ -5,6 +5,8 @@
   "description": "On Bade — back-office (React + Vite).",
   "scripts": {
     "dev": "vite",
+    "dev:prod": "VITE_ADMIN_MODE=api vite --port 5175 --strictPort",
+    "dev:local": "VITE_ADMIN_MODE=api VITE_API_URL=http://localhost:3000/api vite --port 5173 --strictPort",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",

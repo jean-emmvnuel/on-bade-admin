@@ -25,12 +25,16 @@ L'administrateur a **tous les accès** ; chaque action est inscrite au **journal
 
 ```bash
 npm install
-npm run dev        # http://localhost:5175
+npm run dev        # démo : données simulées, http://localhost:5175
+npm run dev:prod   # vraies données : API de production, http://localhost:5175
+npm run dev:local  # vraies données : backend lancé sur ce PC (localhost:3000), http://localhost:5173
 ```
 
-Connexion de démo : `admin@jebade.app` / `JeBade2026!`.
+Connexion de démo : `admin@jebade.app` / `JeBade2026!`. Avec `dev:prod`, connecte-toi avec ton compte On Bade (il doit faire partie de l'équipe).
 
-Sur `localhost`, les données sont simulées et gardées dans le navigateur (`localStorage`). Une fois publié, le back-office lit l'API (`src/lib/api.js`) ; `?demo=1` ou `?demo=0` dans l'adresse force un mode. Pour repartir de zéro en démo : Paramètres › Réinitialiser les données de démo.
+Sur `localhost`, les données sont simulées par défaut et gardées dans le navigateur (`localStorage`). Une fois publié, le back-office lit l'API de production (`src/lib/api.js`). `VITE_API_URL` et `VITE_ADMIN_MODE` (voir `.env.example`) changent l'adresse de l'API et le mode ; `?demo=1` ou `?demo=0` dans l'adresse force un mode pour ce navigateur. Pour repartir de zéro en démo : Paramètres › Réinitialiser les données de démo.
+
+Le serveur n'accepte que les origines de son `CORS_ORIGINS` : en production, le site et `http://localhost:5175`. Si le back-office est publié ailleurs, ajoute son adresse dans `.env.docker` sur le VPS.
 
 Mise en ligne : `npm run build` produit le dossier `dist/`, à servir tel quel (chemins relatifs, routes en `#/…` : aucun réglage serveur).
 

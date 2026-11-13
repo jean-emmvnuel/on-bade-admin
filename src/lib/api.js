@@ -2,9 +2,12 @@
 //
 // Mode :
 // - en ligne (back-office publié) : l'API de production ;
-// - sur localhost : la démo locale (données simulées, utilisée par les tests) — le backend n'accepte
-//   de toute façon pas les requêtes venant de localhost (CORS) ;
+// - sur localhost : la démo locale (données simulées, utilisée par les tests) ;
+// - VITE_ADMIN_MODE=api|demo (au lancement, voir `npm run dev:prod` et `npm run dev:local`) choisit le mode ;
 // - `?demo=1` ou `?demo=0` dans l'adresse force un mode et le garde pour ce navigateur.
+// Adresse de l'API : VITE_API_URL, sinon la production.
+// Le serveur n'accepte que les origines listées dans son CORS_ORIGINS (production : le site, et le back-office
+// lancé sur http://localhost:5175).
 
 const MODE_KEY = 'onbade-admin-mode';
 const TOKEN_KEY = 'onbade-admin-token';
@@ -16,10 +19,13 @@ const forced = new URLSearchParams(location.search).get('demo');
 if (forced === '1' || forced === '0') storage((s) => s.setItem(MODE_KEY, forced === '1' ? 'demo' : 'api'));
 const saved = storage((s) => s.getItem(MODE_KEY));
 const local = ['localhost', '127.0.0.1', ''].includes(location.hostname);
+const env = import.meta.env ?? {};
+const envMode = env.VITE_ADMIN_MODE === 'api' || env.VITE_ADMIN_MODE === 'demo' ? env.VITE_ADMIN_MODE : null;
 
 /** true : le back-office lit et modifie les vraies données. false : démo locale. */
-export const BACKEND = saved ? saved === 'api' : !local;
-export const API_URL = String(globalThis.ONBADE_API_URL || 'https://backend-onbade.oriverse-it.tech/api').replace(/\/$/, '');
+export const BACKEND = saved ? saved === 'api' : envMode ? envMode === 'api' : !local;
+export const PRODUCTION_API = 'https://backend-onbade.oriverse-it.tech/api';
+export const API_URL = String(globalThis.ONBADE_API_URL || env.VITE_API_URL || PRODUCTION_API).replace(/\/$/, '');
 
 // ─── Jeton ────────────────────────────────────────────────
 export const getToken = () => storage((s) => s.getItem(TOKEN_KEY));
