@@ -34,7 +34,7 @@ Connexion de démo : `admin@jebade.app` / `JeBade2026!`. Avec `dev:prod`, connec
 
 Sur `localhost`, les données sont simulées par défaut et gardées dans le navigateur (`localStorage`). Une fois publié, le back-office lit l'API de production (`src/lib/api.js`). `VITE_API_URL` et `VITE_ADMIN_MODE` (voir `.env.example`) changent l'adresse de l'API et le mode ; `?demo=1` ou `?demo=0` dans l'adresse force un mode pour ce navigateur. Pour repartir de zéro en démo : Paramètres › Réinitialiser les données de démo.
 
-Le serveur n'accepte que les origines de son `CORS_ORIGINS` : en production, le site et `http://localhost:5175`. Si le back-office est publié ailleurs, ajoute son adresse dans `.env.docker` sur le VPS.
+En ligne : <https://on-badeoriverseit-team.vercel.app>. Le serveur n'accepte que les origines de son `CORS_ORIGINS` : en production, le site, ce back-office publié et `http://localhost:5175` (`npm run dev:prod`). Si le back-office change d'adresse, ajoute la nouvelle dans `.env.docker` sur le VPS.
 
 Mise en ligne : `npm run build` produit le dossier `dist/`, à servir tel quel (chemins relatifs, routes en `#/…` : aucun réglage serveur).
 
