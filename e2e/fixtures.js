@@ -28,7 +28,7 @@ export async function login(page, { email = ADMIN.email, password = ADMIN.passwo
 /** Passe la session sur le modérateur de la démo (rôle sans droit sur les badges). */
 export async function becomeModerator(page) {
   await page.evaluate(async () => {
-    const S = await import('/js/store.js');
+    const S = await import('/src/lib/store.js');
     const m = S.users().find((u) => u.role === 'moderator');
     S.get().session = { userId: m.id, at: Date.now() };
     localStorage.setItem('jebade-admin-v1', JSON.stringify(S.get()));
@@ -36,7 +36,7 @@ export async function becomeModerator(page) {
 }
 
 /** Lit l'état de la démo depuis le navigateur. */
-export const store = (page, fn, arg) => page.evaluate(async ([src, a]) => { const S = await import('/js/store.js'); return new Function('S', 'a', `return (${src})(S, a)`)(S, a); }, [fn.toString(), arg]);
+export const store = (page, fn, arg) => page.evaluate(async ([src, a]) => { const S = await import('/src/lib/store.js'); return new Function('S', 'a', `return (${src})(S, a)`)(S, a); }, [fn.toString(), arg]);
 
 /** Valide la fenêtre de confirmation ouverte (avec un motif si besoin). */
 export async function confirm(page, reason) {
