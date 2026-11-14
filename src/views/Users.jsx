@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { siteProfileUrl } from '../lib/site.js';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import * as S from '../lib/store.js';
 import { useStore } from '../lib/useStore.js';
@@ -108,11 +109,14 @@ export function UserDetail() {
             <StatusPill status={u.status} /> <Pill tone={u.role === 'admin' ? 'brand' : u.role === 'moderator' ? 'info' : 'neutral'}>{S.ROLES[u.role]}</Pill>
             {u.suspendedUntil ? <> <span className="muted small">jusqu’au {S.fmtDate(u.suspendedUntil)}</span></> : null}
             {isMe ? <> <span className="muted small">(c’est toi)</span></> : null}
+            {u.emailNotifications === false ? <> <Pill tone="neutral"><Icon name="bell" /> E-mails coupés</Pill></> : null}
+            {u.emailNotifications === true ? <> <span className="muted small"><Icon name="bell" /> reçoit les notifications par e-mail</span></> : null}
           </p>
         </div>
         <div className="profile-actions">
           {!isMe && u.status === 'active' ? btn('sanction', 'btn-danger', 'ban', 'Sanctionner') : null}
           {!isMe && ['suspended', 'banned'].includes(u.status) ? btn('lift', 'btn-secondary', 'restore', 'Lever la sanction') : null}
+          {u.status !== 'deleted' ? <a className="btn btn-secondary btn-sm" href={siteProfileUrl(u.pseudo)} target="_blank" rel="noopener noreferrer" data-k="site"><Icon name="link" /> Voir sur le site</a> : null}
           {S.canManageBadges() ? btn('badge', 'btn-secondary', 'badgeCheck', u.verified ? 'Retirer le badge' : 'Attribuer le badge') : null}
           {!isMe ? btn('role', 'btn-secondary', 'shield', 'Rôle') : null}
           {S.can('pseudo') ? btn('pseudo', 'btn-secondary', 'userPen', 'Pseudo') : null}

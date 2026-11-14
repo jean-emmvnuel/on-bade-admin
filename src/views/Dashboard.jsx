@@ -4,6 +4,7 @@ import * as S from '../lib/store.js';
 import { useStore } from '../lib/useStore.js';
 import { useEnter } from '../lib/motion.js';
 import { BarList, CountUp, Icon, LineChart, PageHead, UserCell } from '../components/ui.jsx';
+import { SHARE_CHANNELS } from '../lib/site.js';
 
 const D = 86_400_000;
 const ACTIONS = {
@@ -150,6 +151,26 @@ export default function Dashboard() {
           </div>
         )}
       </section>
+
+      {live && stats.shares30d !== undefined ? (
+        <section className="grid-2">
+          <div className="card" data-enter data-shares>
+            <div className="card-head"><h2>Partages hors de l’app</h2><span className="muted small">30 derniers jours</span></div>
+            <div className="stats-row">
+              <span><b>{S.fmt(stats.shares30d)}</b> partage{stats.shares30d > 1 ? 's' : ''} depuis l’app</span>
+              <span><b>{S.fmt(stats.linkOpens30d ?? 0)}</b> ouverture{stats.linkOpens30d > 1 ? 's' : ''} de liens partagés</span>
+            </div>
+            {stats.sharesByChannel?.length
+              ? <BarList items={stats.sharesByChannel.map((c) => ({ label: SHARE_CHANNELS[c.channel] ?? c.channel, v: c.count }))} />
+              : <p className="muted">Aucun partage ce mois-ci.</p>}
+          </div>
+          <div className="card" data-enter data-emails>
+            <div className="card-head"><h2>Notifications par e-mail</h2></div>
+            <p><b>{S.fmt(stats.emailOptOuts ?? 0)}</b> compte{stats.emailOptOuts > 1 ? 's ont' : ' a'} coupé les e-mails, sur {S.fmt(stats.users ?? 0)}.</p>
+            <p className="muted small">Mentions, commentaires, réponses, badge, messages et avertissements de l’équipe. Les rires, rebades et annonces ne partent jamais par e-mail.</p>
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 }

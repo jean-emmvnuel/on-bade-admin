@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { SHARE_CHANNELS, siteBadingUrl } from '../lib/site.js';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import * as S from '../lib/store.js';
 import { errorMessage } from '../lib/api.js';
@@ -70,7 +71,7 @@ export function Badings() {
   );
 }
 
-const CHANNELS = { whatsapp: 'WhatsApp', facebook: 'Facebook', story: 'Story', download: 'Image enregistrée', copy: 'Lien copié', other: 'Autres', direct: 'Lien direct', unknown: 'Non précisé' };
+const CHANNELS = SHARE_CHANNELS;
 const rows = (counts) => Object.entries(counts ?? {}).sort((x, y) => y[1] - x[1]);
 
 /** Partages du bading : depuis l'app (par canal) et ouvertures du lien hors de l'app (par provenance). */
@@ -118,6 +119,7 @@ export function BadingDetail() {
       {S.can('pin') && b.status === 'visible'
         ? <button className="btn btn-secondary btn-sm" data-a={b.pinned ? 'unpin' : 'pin'} onClick={() => badingAction(b.pinned ? 'unpin' : 'pin', b)}><Icon name="trendingUp" /> {b.pinned ? 'Désépingler' : 'Épingler'}</button>
         : null}
+      {b.status === 'visible' ? <a className="btn btn-secondary btn-sm" href={siteBadingUrl(b.id)} target="_blank" rel="noopener noreferrer" data-a="site"><Icon name="link" /> Voir sur le site</a> : null}
       {b.status !== 'deleted' ? <button className="btn btn-danger btn-sm" data-a="delete" onClick={() => badingAction('delete', b)}><Icon name="trash" /> Supprimer</button> : null}
     </>
   );
