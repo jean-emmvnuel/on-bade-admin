@@ -67,7 +67,7 @@ export const fromBading = (b) => ({
 export const fromAdminBading = (b) => ({
   id: b.id, authorId: b.authorId ?? null, anonymous: !!b.anonymous, text: b.text ?? '', image: fromImage(b.image), createdAt: b.createdAt,
   likes: b.likes ?? 0, rebades: b.rebades ?? 0, shares: b.shares ?? 0, views: b.views ?? 0, commentCount: b.comments ?? 0,
-  reportsCount: b.openReports ?? 0, status: b.status ?? 'visible',
+  reportsCount: b.openReports ?? 0, linkOpens: b.linkOpens ?? 0, status: b.status ?? 'visible',
   hiddenReason: b.hidden?.reason ?? undefined, autoHidden: !!b.hidden?.auto, pinned: b.pinned ?? null,
 });
 
@@ -242,11 +242,11 @@ export async function loadAll() {
 
 /** Détail d'un bading (vue de l'équipe) : tous ses commentaires, masqués compris, et leurs auteurs. */
 export async function loadBading(id) {
-  const { bading, comments = [] } = await api.getAdminBading(id);
+  const { bading, comments = [], shares = null } = await api.getAdminBading(id);
   const authors = new Map();
   comments.forEach((c) => { if (c.author?.id) authors.set(c.author.id, fromBriefUser(c.author)); });
   if (bading.author?.id) authors.set(bading.author.id, fromBriefUser(bading.author));
-  return { bading: fromAdminBading(bading), comments: comments.map(fromAdminComment), users: [...authors.values()] };
+  return { bading: { ...fromAdminBading(bading), shareStats: shares }, comments: comments.map(fromAdminComment), users: [...authors.values()] };
 }
 
 /** Fiche d'un utilisateur avec tout l'historique de ses blocages. */

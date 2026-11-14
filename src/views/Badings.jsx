@@ -70,6 +70,25 @@ export function Badings() {
   );
 }
 
+const CHANNELS = { whatsapp: 'WhatsApp', facebook: 'Facebook', story: 'Story', download: 'Image enregistrée', copy: 'Lien copié', other: 'Autres', direct: 'Lien direct', unknown: 'Non précisé' };
+const rows = (counts) => Object.entries(counts ?? {}).sort((x, y) => y[1] - x[1]);
+
+/** Partages du bading : depuis l'app (par canal) et ouvertures du lien hors de l'app (par provenance). */
+function ShareCard({ stats }) {
+  const { shares, opens } = stats;
+  return (
+    <section className="card" data-enter data-share-card>
+      <div className="card-head"><h2>Partages</h2><span className="muted small">{S.fmt(shares.total)} depuis l’app · {S.fmt(opens.total)} ouvertures</span></div>
+      {shares.total || opens.total ? (
+        <ul className="mini-list">
+          {rows(shares.byChannel).map(([k, n]) => <li key={`s-${k}`}><b>{CHANNELS[k] ?? k}</b><small>{S.fmt(n)} partage{n > 1 ? 's' : ''} depuis l’app</small></li>)}
+          {rows(opens.bySource).map(([k, n]) => <li key={`o-${k}`}><b>{CHANNELS[k] ?? k}</b><small>{S.fmt(n)} ouverture{n > 1 ? 's' : ''} du lien</small></li>)}
+        </ul>
+      ) : <p className="muted">Pas encore partagé.</p>}
+    </section>
+  );
+}
+
 export function BadingDetail() {
   const { id } = useParams();
   const st = useStore();
@@ -128,6 +147,7 @@ export function BadingDetail() {
               <span><b>{S.fmt(b.likes)}</b> rires</span><span><b>{b.rebades}</b> rebades</span><span><b>{b.shares}</b> partages</span>
               <span><b>{Math.max(comments.length, b.commentCount ?? 0)}</b> commentaires</span>
               {b.views ? <span><b>{S.fmt(b.views)}</b> vues</span> : null}
+              {b.linkOpens ? <span><b>{S.fmt(b.linkOpens)}</b> ouvertures du lien</span> : null}
             </div>
           </article>
           <section className="card" data-enter>
@@ -155,6 +175,7 @@ export function BadingDetail() {
           </section>
         </div>
         <aside>
+          {b.shareStats ? <ShareCard stats={b.shareStats} /> : null}
           <section className="card" data-enter>
             <div className="card-head"><h2>Signalements ({reports.length})</h2>{reports.some((r) => r.status === 'open') ? <Link className="link" to="/reports">Traiter</Link> : null}</div>
             {reports.length ? (
