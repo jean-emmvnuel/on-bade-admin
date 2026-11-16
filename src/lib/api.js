@@ -94,6 +94,12 @@ export const logout = () => post('/logout');
 export const requestPasswordReset = (email) => post('/password-reset', { email });
 
 export const getStats = () => get('/admin/stats');
+
+// Backlog du projet (Kanban)
+export const getBacklog = () => get('/admin/backlog'); // → { cards }
+export const createBacklogCard = (body) => post('/admin/backlog', body); // → { card }
+export const updateBacklogCard = (id, body) => patch(`/admin/backlog/${encodeURIComponent(id)}`, body); // → { card }
+export const deleteBacklogCard = (id) => del(`/admin/backlog/${encodeURIComponent(id)}`); // → 204
 export const getUsers = (query) => get('/admin/users', query); // { q, filter, page, limit } → { users, total, page }
 export const getUser = (userId) => get(`/admin/users/${id(userId)}`); // → { user, blocks }
 export const blockUser = (userId, reason, expiresAt) => post(`/admin/users/${id(userId)}/block`, { reason, ...(expiresAt ? { expiresAt } : {}) });

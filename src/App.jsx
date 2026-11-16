@@ -20,6 +20,7 @@ import Announcements from './views/Announcements.jsx';
 import Moderation from './views/Moderation.jsx';
 import Settings from './views/Settings.jsx';
 import Audit from './views/Audit.jsx';
+import Backlog from './views/Backlog.jsx';
 
 // Entrées du menu : [clé, chemin, icône, libellé, compteur éventuel].
 const NAV = [
@@ -40,7 +41,10 @@ const NAV = [
     ['data', '/data', 'database', 'Données personnelles', () => S.pendingData().length],
     ['audit', '/audit', 'fileText', 'Journal d’audit'],
   ]],
-  ['Plateforme', [['settings', '/settings', 'sliders', 'Paramètres']]],
+  ['Plateforme', [
+    ['settings', '/settings', 'sliders', 'Paramètres'],
+    ['backlog', '/backlog', 'sparkles', 'Backlog du projet'],
+  ]],
 ];
 
 // Écrans protégés : [chemin, composant, clé de droit].
@@ -59,6 +63,7 @@ const PAGES = [
   ['/moderation', Moderation, 'moderation'],
   ['/settings', Settings, 'settings'],
   ['/audit', Audit, 'audit'],
+  ['/backlog', Backlog, 'backlog'],
 ];
 
 export default function App() {

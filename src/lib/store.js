@@ -217,7 +217,7 @@ function commit() {
  */
 const SERVER_FEATURES = new Set(['reports', 'badings', 'users', 'badges', 'data', 'settings', 'block', 'verify', 'role', 'passwordReset', 'deleteContent',
   'comments', 'stickers', 'moderation', 'announcements', 'audit', 'warning', 'hide', 'reveal', 'pseudo', 'deleteUser', 'restoreComment', 'dataProcess',
-  'pin', 'message', 'export', 'security']);
+  'pin', 'message', 'export', 'security', 'backlog']);
 /** Fonctions réservées aux administrateurs « tous les droits » (permission ALL) côté serveur. */
 const ALL_ONLY = new Set(['reveal', 'deleteUser', 'dataProcess', 'export']);
 export const can = (feature) => !BACKEND || (SERVER_FEATURES.has(feature) && (!ALL_ONLY.has(feature) || me()?.permission === 'ALL'));
