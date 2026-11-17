@@ -64,7 +64,7 @@ Tous les écrans sont actifs en mode API (`SERVER_FEATURES` dans `src/lib/store.
 
 - `GET /admin/settings` → `{ rules, platform, bannedWords, defaults }`
 - `PATCH /admin/settings { rules?, platform?, bannedWords? (liste complète) }` — ALL ; seules les clés envoyées changent.
-- `rules` : `minLength, maxLength, captionMax, opinionMax, commentMax, dailyLimit, maxMentions, myStickersMax, autoHideThreshold, badgeActiveDays, badgeMinLaughs, badgeRetryDays, deletionDays` (mêmes noms que `DEFAULT_RULES` du store).
+- `rules` : `minLength, maxLength, captionMax, opinionMax, commentMax, maxMentions, myStickersMax, autoHideThreshold, badgeActiveDays, badgeMinLaughs, badgeRetryDays, deletionDays` (mêmes noms que `DEFAULT_RULES` du store).
 - `platform` : `signupsOpen, anonymousEnabled, commentsEnabled, maintenance, maintenanceMessage, adminMfaRequired`.
 
 ## Sécurité de l'équipe (2FA TOTP et connexions)
