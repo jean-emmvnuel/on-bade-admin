@@ -7,6 +7,8 @@ import { toast } from './lib/toast.js';
 import { useStore } from './lib/useStore.js';
 import { closeMenu, closeModal, menu, MenuHost, ModalHost, Toaster } from './components/overlays.jsx';
 import { Avatar, Icon, Logo } from './components/ui.jsx';
+import { AlertsBell } from './components/AlertsBell.jsx';
+import { forgetPushOnLogout } from './lib/alerts.js';
 import Login from './views/Login.jsx';
 import Dashboard from './views/Dashboard.jsx';
 import Reports from './views/Reports.jsx';
@@ -21,6 +23,7 @@ import Moderation from './views/Moderation.jsx';
 import Settings from './views/Settings.jsx';
 import Audit from './views/Audit.jsx';
 import Backlog from './views/Backlog.jsx';
+import Server from './views/Server.jsx';
 
 // Entrées du menu : [clé, chemin, icône, libellé, compteur éventuel].
 const NAV = [
@@ -43,6 +46,7 @@ const NAV = [
   ]],
   ['Plateforme', [
     ['settings', '/settings', 'sliders', 'Paramètres'],
+    ['server', '/server', 'activity', 'Serveur'],
     ['backlog', '/backlog', 'sparkles', 'Backlog du projet'],
   ]],
 ];
@@ -64,6 +68,7 @@ const PAGES = [
   ['/settings', Settings, 'settings'],
   ['/audit', Audit, 'audit'],
   ['/backlog', Backlog, 'backlog'],
+  ['/server', Server, 'server'],
 ];
 
 export default function App() {
@@ -151,7 +156,7 @@ function Shell({ children }) {
     ]);
     if (k === 'profile') navigate(`/users/${me.id}`);
     if (k === 'audit') navigate(`/audit?actor=${me.id}`);
-    if (k === 'logout') { S.logOut(); toast('À bientôt 👋'); navigate('/login'); }
+    if (k === 'logout') { forgetPushOnLogout(); S.logOut(); toast('À bientôt 👋'); navigate('/login'); }
   };
 
   return (
@@ -183,6 +188,7 @@ function Shell({ children }) {
           <button className="icon-btn only-mobile" data-open-nav aria-label="Menu" onClick={() => document.body.classList.add('nav-open')}><Icon name="menu" /></button>
           <GlobalSearch />
           {S.BACKEND ? <button className="icon-btn" data-reload aria-label="Actualiser les données" title="Actualiser les données" disabled={reloading} onClick={reload}><Icon name="restore" /></button> : null}
+          <AlertsBell />
           <button className="me-btn" data-me aria-label="Mon compte" onClick={openAccount}>
             <Avatar user={me} size={34} />
             <span className="hide-sm"><b>@{me?.pseudo}</b><small>{S.ROLES[me?.role]}</small></span>
