@@ -81,6 +81,18 @@ export const Empty = ({ icon, title, children }) => (
   <div className="empty card" data-enter><Icon name={icon} /><h2>{title}</h2>{children}</div>
 );
 
+/** Note vocale d'un commentaire : lecteur du navigateur, durée, et mention « supprimé par son auteur » le cas échéant. */
+export function VoiceClip({ c }) {
+  if (!c.audio) return null;
+  const s = Math.round((c.audio.durationMs || 0) / 1000);
+  return (
+    <span className="voice-clip" data-voice>
+      <audio controls preload="none" src={c.audio.src} aria-label={`Note vocale de ${s} secondes`} />
+      <small>🎤 {s} s{c.deletedByAuthor ? ' · supprimé par son auteur (gardé 90 jours pour la modération)' : ''}</small>
+    </span>
+  );
+}
+
 /** Sticker de la bibliothèque (dessiné en CSS) ou sticker personnel (image), éventuellement retiré par la modération. */
 export function Sticker({ id, size = 128 }) {
   const c = customSticker(id);

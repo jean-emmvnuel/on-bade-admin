@@ -477,3 +477,8 @@ button.link { background: none; border: 0; padding: 0; font: inherit; font-weigh
 .alerts-settings > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .alerts-settings > div > span:first-child { display: flex; flex-direction: column; font-size: 14px; }
 .alerts-settings small { color: var(--text-3); font-size: 12px; }
+
+/* Note vocale d’un commentaire (écoute par l’équipe) */
+.voice-clip { display: inline-flex; flex-direction: column; gap: 4px; max-width: 280px; }
+.voice-clip audio { width: 260px; max-width: 100%; height: 36px; }
+.voice-clip small { color: var(--text-3, #817d7d); font-size: 12px; }

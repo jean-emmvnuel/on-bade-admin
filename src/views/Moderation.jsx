@@ -8,6 +8,7 @@ import { Icon, PageHead } from '../components/ui.jsx';
 
 const FIELDS = [
   ['Publication', [['minLength', 'Longueur minimale d’un bading', 'caractères'], ['maxLength', 'Longueur maximale d’un bading', 'caractères'], ['captionMax', 'Légende d’un bading avec image', 'caractères'], ['maxMentions', 'Mentions maximum par bading', 'mentions'], ['opinionMax', 'Longueur d’un avis de rebade', 'caractères'], ['commentMax', 'Longueur d’un commentaire', 'caractères']]],
+  ['Commentaires vocaux', [['voiceMaxSeconds', 'Durée maximale d’une note vocale', 'secondes']]],
   ['Stickers', [['myStickersMax', 'Stickers par collection', 'stickers']]],
   ['Modération', [['autoHideThreshold', 'Masquage automatique après', 'signalements']]],
   ['Badge vérifié', [['badgeActiveDays', 'Actif : dernier bading signé il y a moins de', 'jours'], ['badgeMinLaughs', 'Rires reçus minimum (badings signés)', 'rires'], ['badgeRetryDays', 'Délai avant nouvelle demande', 'jours']]],

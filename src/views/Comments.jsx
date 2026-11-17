@@ -4,7 +4,7 @@ import { useStore } from '../lib/useStore.js';
 import { useQuery } from '../lib/useQuery.js';
 import { useEnter } from '../lib/motion.js';
 import { menu } from '../components/overlays.jsx';
-import { Icon, PageHead, Sticker, StatusPill, Table, useDebouncedField, UserCell } from '../components/ui.jsx';
+import { Icon, PageHead, Sticker, VoiceClip, StatusPill, Table, useDebouncedField, UserCell } from '../components/ui.jsx';
 import { commentAction } from '../actions.jsx';
 
 export default function Comments() {
@@ -45,7 +45,7 @@ export default function Comments() {
             const rep = S.reportsOn('comment', c.id).length, b = S.bading(c.badingId);
             return (
               <tr key={c.id} data-id={c.id}>
-                <td className="text-cell">{c.sticker ? <span className="c-stk small"><Sticker id={c.sticker} size={64} /></span> : <span className="clamp">{c.text}</span>}</td>
+                <td className="text-cell">{c.audio ? <VoiceClip c={c} /> : c.sticker ? <span className="c-stk small"><Sticker id={c.sticker} size={64} /></span> : <span className="clamp">{c.text}</span>}</td>
                 <td><UserCell user={S.user(c.authorId)} /></td>
                 <td className="text-cell"><Link className="clamp muted" to={`/badings/${c.badingId}`}>{b?.text ? `${b.text.slice(0, 60)}…` : '📷 Bading en image'}</Link></td>
                 <td className="num">{rep ? <span className="flag-n"><Icon name="flag" /> {rep}</span> : '—'}</td>

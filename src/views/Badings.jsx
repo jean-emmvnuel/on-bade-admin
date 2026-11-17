@@ -7,7 +7,7 @@ import { toast } from '../lib/toast.js';
 import { useStore } from '../lib/useStore.js';
 import { useQuery } from '../lib/useQuery.js';
 import { useEnter } from '../lib/motion.js';
-import { Avatar, Icon, PageHead, Sticker, StatusPill, Table, useDebouncedField, UserCell } from '../components/ui.jsx';
+import { Avatar, Icon, PageHead, Sticker, VoiceClip, StatusPill, Table, useDebouncedField, UserCell } from '../components/ui.jsx';
 import { badingAction, badingMenu, commentAction, revealDialog } from '../actions.jsx';
 import { Pager } from './Pager.jsx';
 
@@ -164,7 +164,7 @@ export function BadingDetail() {
                       <div>
                         <b><Link to={`/users/${c.authorId}`}>@{S.user(c.authorId)?.pseudo}</Link></b> <small>{S.timeAgo(c.createdAt)} · 😂 {c.likes}</small>
                         {deleted ? <> <StatusPill status="deleted" /></> : null}
-                        {c.sticker ? <div className="c-stk"><Sticker id={c.sticker} size={84} /></div> : <p>{c.text}</p>}
+                        {c.audio ? <VoiceClip c={c} /> : c.sticker ? <div className="c-stk"><Sticker id={c.sticker} size={84} /></div> : <p>{c.text}</p>}
                       </div>
                       {deleted && !S.can('restoreComment') ? null : (
                         <button className="btn btn-ghost btn-sm" data-c={c.id} data-k={deleted ? 'restore' : 'delete'} onClick={() => commentAction(deleted ? 'restore' : 'delete', c)}>{deleted ? 'Rétablir' : 'Supprimer'}</button>

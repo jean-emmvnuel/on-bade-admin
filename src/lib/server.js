@@ -77,6 +77,8 @@ export const fromAdminBading = (b) => ({
 export const fromAdminComment = (c) => ({
   id: c.id, badingId: c.badingId, authorId: c.authorId ?? c.author?.id, text: c.text ?? '', sticker: c.sticker ?? undefined,
   createdAt: c.createdAt, likes: c.likes ?? 0, status: c.status === 'hidden' ? 'deleted' : 'visible', hiddenReason: c.hidden?.reason ?? undefined,
+  // Note vocale : l'équipe peut l'écouter, même supprimée par son auteur (deletedByAuthor, gardée 90 jours).
+  audio: c.audio ?? undefined, deletedByAuthor: !!c.deletedByAuthor,
 });
 
 /** Sticker personnel de /admin/stickers. */

@@ -5,7 +5,7 @@ import * as S from './lib/store.js';
 import { go } from './lib/nav.js';
 import { toast } from './lib/toast.js';
 import { confirmAction, dialog, menu, openModal } from './components/overlays.jsx';
-import { Icon, Sticker, UserCell } from './components/ui.jsx';
+import { Icon, Sticker, VoiceClip, UserCell } from './components/ui.jsx';
 
 // ─── Sanctions ─────────────────────────────────────────────
 const LEVEL_HELP = ['Le bading est supprimé et la personne est prévenue.', 'Le compte ne peut plus publier ni commenter pendant 7 jours.', 'Le compte est fermé définitivement.'];
@@ -339,7 +339,7 @@ export function TargetPreview({ type, id }) {
     return (
       <Link className="preview" to={`/badings/${c.badingId}`}>
         <small><Icon name="message" /> Commentaire de @{S.user(c.authorId)?.pseudo} · {S.timeAgo(c.createdAt)}</small>
-        {c.sticker ? <Sticker id={c.sticker} size={90} /> : <span>{c.text}</span>}
+        {c.audio ? <VoiceClip c={c} /> : c.sticker ? <Sticker id={c.sticker} size={90} /> : <span>{c.text}</span>}
       </Link>
     );
   }

@@ -73,7 +73,7 @@ const DEMO_STICKERS = {
   us4: { ownerId: 'u29', label: 'Konan le nul', src: "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Crect%20x%3D%2216%22%20y%3D%2216%22%20width%3D%22480%22%20height%3D%22480%22%20rx%3D%2296%22%20fill%3D%22%235ab0ff%22/%3E%3Ccircle%20cx%3D%22256%22%20cy%3D%22220%22%20r%3D%22120%22%20fill%3D%22%238a5a3a%22/%3E%3Crect%20x%3D%22150%22%20y%3D%22320%22%20width%3D%22212%22%20height%3D%22140%22%20rx%3D%2240%22%20fill%3D%22%232d6cdf%22/%3E%3Ctext%20x%3D%22256%22%20y%3D%22110%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%20Black%2C%20Arial%22%20font-size%3D%2248%22%20fill%3D%22%231a1919%22%3EKONAN%20LE%20NUL%3C/text%3E%3C/svg%3E" },
 };
 
-const DEFAULT_RULES = { minLength: 10, maxLength: 1000, captionMax: 280, myStickersMax: 1000, opinionMax: 280, commentMax: 500, maxMentions: 5, autoHideThreshold: 5, badgeActiveDays: 30, badgeMinLaughs: 1000, badgeRetryDays: 30, deletionDays: 30 };
+const DEFAULT_RULES = { minLength: 10, maxLength: 1000, captionMax: 280, myStickersMax: 1000, opinionMax: 280, commentMax: 500, voiceMaxSeconds: 60, maxMentions: 5, autoHideThreshold: 5, badgeActiveDays: 30, badgeMinLaughs: 1000, badgeRetryDays: 30, deletionDays: 30 };
 const DEFAULT_PLATFORM = { signupsOpen: true, anonymousEnabled: true, commentsEnabled: true, maintenance: false, maintenanceMessage: 'On Bade fait une petite pause, on revient vite 😅', adminMfaRequired: false };
 
 /** État vide, rempli par l'API (server.loadAll). */
