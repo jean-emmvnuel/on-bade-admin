@@ -28,7 +28,7 @@ export default function Audit() {
   const exportCsv = () => {
     const rows = [['date', 'membre', 'action', 'cible', 'detail'], ...list.map((l) => [new Date(l.at).toISOString(), S.user(l.actor)?.pseudo ?? l.actor, l.action, l.target ?? '', l.detail ?? ''])];
     const csv = rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
-    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([`﻿${csv}`], { type: 'text/csv' })), download: `jebade-audit-${new Date().toISOString().slice(0, 10)}.csv` });
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([`\uFEFF${csv}`], { type: 'text/csv' })), download: `jebade-audit-${new Date().toISOString().slice(0, 10)}.csv` });
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
   };

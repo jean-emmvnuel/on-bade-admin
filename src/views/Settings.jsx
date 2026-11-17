@@ -197,7 +197,6 @@ function LoginHistory({ isAll }) {
 }
 
 function DemoSettings() {
-  const st = S.get();
   const ref = useEnter();
   const navigate = useNavigate();
   const team = S.users().filter((u) => u.role !== 'user');

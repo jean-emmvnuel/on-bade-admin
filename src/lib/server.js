@@ -134,7 +134,7 @@ export function buildDaily(badings, users, now = Date.now()) {
   const at = (ts) => days.find((d) => ts >= d.start && ts < d.end);
   badings.forEach((b) => { const d = at(b.createdAt); if (d) { d.badings += 1; d.laughs += b.likes || 0; } });
   users.forEach((u) => { const d = at(u.joinedAt); if (d) d.signups += 1; });
-  return days.map(({ start, end, ...d }) => d);
+  return days.map(({ start: _start, end: _end, ...d }) => d);
 }
 
 // ─── Chargement ───────────────────────────────────────────
