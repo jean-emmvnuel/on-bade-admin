@@ -21,6 +21,17 @@ L'administrateur a **tous les accès** ; chaque action est inscrite au **journal
 | Journal d'audit | Toutes les actions, filtres, export CSV |
 | Paramètres | Inscriptions, publication anonyme, commentaires, mode maintenance ; équipe et droits par rôle |
 
+## 🧩 Les 4 projets On Bade
+
+| Projet | Dépôt |
+|---|---|
+| Serveur / API | [`growthman7/onbad-backend`](https://github.com/growthman7/onbad-backend) |
+| Site web | [`jean-emmvnuel/on-bad-web`](https://github.com/jean-emmvnuel/on-bad-web) |
+| **Back-office** (ce dépôt) | [`jean-emmvnuel/on-bade-admin`](https://github.com/jean-emmvnuel/on-bade-admin) |
+| App mobile | [`jean-emmvnuel/on-bade-mobile`](https://github.com/jean-emmvnuel/on-bade-mobile) |
+
+📐 Comment ils s'articulent : [ARCHITECTURE.md](https://github.com/growthman7/onbad-backend/blob/main/docs/ARCHITECTURE.md) · 🔌 Toutes les routes de l'API : [API.md](https://github.com/growthman7/onbad-backend/blob/main/docs/API.md) (générée depuis le code du serveur).
+
 ## Lancer
 
 ```bash
@@ -96,3 +107,8 @@ npm run test:all                  # unitaires + bout en bout
 
 Chaque test échoue aussi si la page lève une erreur JavaScript.
 
+
+## Tester en local contre la vraie API
+
+L'adresse de l'API vient de `VITE_API_URL` (ou `window.ONBADE_API_URL`) et le mode de `?demo=0` dans l'adresse. Un compte
+admin de test existe dans la base locale ; ses identifiants ne sont pas dans le dépôt.
