@@ -96,6 +96,8 @@ export const requestPasswordReset = (email) => post('/password-reset', { email }
 export const getStats = () => get('/admin/stats');
 /** État du serveur : requêtes, temps de réponse, erreurs, mémoire, base. `range` : 1h, 6h ou 24h. */
 export const getServer = (range) => get('/admin/server', { range });
+/** Journal des refus (4xx), gardé en base 30 jours : { refusals, total, page, keepDays }. */
+export const getRefusals = ({ q = '', hide401 = true, page = 1, limit = 50 } = {}) => get('/admin/refusals', { ...(q ? { q } : {}), ...(hide401 ? { hide401: 1 } : {}), page, limit });
 // Alertes de l'équipe (cloche) et push du back-office
 export const getAlerts = (limit = 50) => get('/admin/alerts', { limit }); // → { alerts, unread, seenAt }
 export const markAlertsRead = () => post('/admin/alerts/read');

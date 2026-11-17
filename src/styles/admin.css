@@ -482,3 +482,10 @@ button.link { background: none; border: 0; padding: 0; font: inherit; font-weigh
 .voice-clip { display: inline-flex; flex-direction: column; gap: 4px; max-width: 280px; }
 .voice-clip audio { width: 260px; max-width: 100%; height: 36px; }
 .voice-clip small { color: var(--text-3, #817d7d); font-size: 12px; }
+
+/* Journal des refus (page Serveur) */
+.refusal-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 12px; }
+.refusal-tools .search-inline { flex: 1 1 260px; min-width: 0; }
+.refusal-tools .check { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+[data-refusals] .text-cell small { display: block; margin-top: 2px; }
+[data-refusals] .pager { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 12px; }

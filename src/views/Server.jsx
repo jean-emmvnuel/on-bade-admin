@@ -209,6 +209,8 @@ export default function Server() {
         </div>
       </section>
 
+      <RefusalLog />
+
       <section className="grid-2">
         <div className="card" data-enter data-slow>
           <div className="card-head"><h2>Requêtes lentes</h2><span className="muted small">plus de {fmtMs(s.slowThresholdMs)}</span></div>
@@ -239,6 +241,79 @@ export default function Server() {
           </Table>
         </div>
       ) : null}
+    </div>
+  );
+}
+
+// ─── Journal des refus (4xx) ───────────────────────────────
+
+const DEMO_REFUSALS = [
+  { id: 'd1', status: 422, method: 'POST', path: '/api/badings/:id/comments', code: 'invalid_audio', message: 'Note vocale invalide (data URL base64 attendue)', client: 'iPhone iOS 18.7 · Safari 27', count: 1, lastAt: Date.now() - 12 * 60_000 },
+  { id: 'd2', status: 429, method: 'POST', path: '/api/login', code: 'too_many_attempts', message: 'Trop de tentatives pour ce compte', client: 'Android 15 · Chrome 131', count: 6, lastAt: Date.now() - 2 * 3600_000 },
+  { id: 'd3', status: 404, method: 'GET', path: '/api/badings/:id', code: 'not_found', message: 'Ce bading n’existe pas ou plus', client: 'Windows · Firefox 133', count: 3, lastAt: Date.now() - 26 * 3600_000 },
+];
+
+/**
+ * Pourquoi une action d'un Badeur a été refusée (vocal invalide, trop de tentatives, introuvable…), gardé 30 jours en base :
+ * contrairement aux mesures ci-dessus, il survit aux redémarrages. Les refus identiques d'une même minute sont regroupés.
+ */
+function RefusalLog() {
+  const [q, setQ] = useState('');
+  const [hide401, setHide401] = useState(true);
+  const [page, setPage] = useState(1);
+  const [res, setRes] = useState(null);
+  const [error, setError] = useState(null);
+
+  const load = useCallback(() => {
+    if (!S.BACKEND) {
+      const list = DEMO_REFUSALS.filter((r) => !q || `${r.path} ${r.code} ${r.message}`.toLowerCase().includes(q.toLowerCase()));
+      setRes({ refusals: list, total: list.length, page: 1, keepDays: 30 });
+      return;
+    }
+    api.getRefusals({ q, hide401, page })
+      .then((d) => { setRes(d); setError(null); })
+      .catch((e) => setError(errorMessage(e, 'Journal des refus indisponible')));
+  }, [q, hide401, page]);
+
+  useEffect(() => {
+    const timer = setTimeout(load, q ? 300 : 0);
+    return () => clearTimeout(timer);
+  }, [load, q]);
+
+  const pages = res ? Math.max(1, Math.ceil(res.total / 50)) : 1;
+  return (
+    <div className="card" data-enter data-refusals>
+      <div className="card-head">
+        <h2>Journal des refus</h2>
+        <span className="muted small">{res ? `${S.fmt(res.total)} sur ${res.keepDays} jours · gardé même après un redémarrage` : ''}</span>
+      </div>
+      <div className="refusal-tools">
+        <div className="search-inline"><Icon name="search" /><input type="search" placeholder="Route, code ou motif (ex. vocale)…" aria-label="Chercher dans le journal des refus"
+          value={q} onChange={(e) => { setQ(e.target.value); setPage(1); }} /></div>
+        <label className="check"><input type="checkbox" checked={hide401} onChange={(e) => { setHide401(e.target.checked); setPage(1); }} /> Masquer « non connecté » (401)</label>
+        <button className="btn btn-secondary btn-sm" onClick={load}><Icon name="restore" /> Actualiser</button>
+      </div>
+      {error ? <p className="danger-text">{error}</p> : null}
+      <Table head={['Quand', 'Route', 'Refus', 'Motif', 'Appareil', 'Fois']} empty={res ? 'Aucun refus sur cette période 🎉' : 'Lecture du journal…'}>
+        {(res?.refusals ?? []).map((r) => (
+          <tr key={r.id}>
+            <td className="nowrap muted" title={new Date(r.lastAt).toLocaleString('fr-FR')}>{S.timeAgo(r.lastAt)}</td>
+            <td className="route"><code>{r.method} {short(r.path)}</code></td>
+            <td className="nowrap"><Pill tone={r.status === 429 || r.status === 403 ? 'bad' : 'warn'}>{r.status}</Pill> <small>{STATUS_LABELS[r.status] ?? ''}</small></td>
+            <td className="text-cell"><span className="clamp">{r.message ?? '—'}</span>{r.code ? <small><code>{r.code}</code></small> : null}</td>
+            <td className="muted small">{r.client ?? '—'}</td>
+            <td className="num">{S.fmt(r.count)}</td>
+          </tr>
+        ))}
+      </Table>
+      {pages > 1 ? (
+        <div className="pager">
+          <button className="btn btn-secondary btn-sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Précédents</button>
+          <span className="muted small">Page {page} sur {pages}</span>
+          <button className="btn btn-secondary btn-sm" disabled={page >= pages} onClick={() => setPage((p) => p + 1)}>Suivants</button>
+        </div>
+      ) : null}
+      <p className="muted small">Sans contenu ni donnée personnelle : la route, le code et le message de l’API, et l’appareil. Les refus d’accès décidés avant la route (jeton absent ou invalide) n’y figurent pas.</p>
     </div>
   );
 }
