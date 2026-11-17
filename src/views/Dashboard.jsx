@@ -164,11 +164,6 @@ export default function Dashboard() {
               ? <BarList items={stats.sharesByChannel.map((c) => ({ label: SHARE_CHANNELS[c.channel] ?? c.channel, v: c.count }))} />
               : <p className="muted">Aucun partage ce mois-ci.</p>}
           </div>
-          <div className="card" data-enter data-emails>
-            <div className="card-head"><h2>Notifications par e-mail</h2></div>
-            <p><b>{S.fmt(stats.emailOptOuts ?? 0)}</b> compte{stats.emailOptOuts > 1 ? 's ont' : ' a'} coupé les e-mails, sur {S.fmt(stats.users ?? 0)}.</p>
-            <p className="muted small">Mentions, commentaires, réponses, badge, messages et avertissements de l’équipe. Les rires, rebades et annonces ne partent jamais par e-mail.</p>
-          </div>
         </section>
       ) : null}
     </div>

@@ -109,8 +109,6 @@ export function UserDetail() {
             <StatusPill status={u.status} /> <Pill tone={u.role === 'admin' ? 'brand' : u.role === 'moderator' ? 'info' : 'neutral'}>{S.ROLES[u.role]}</Pill>
             {u.suspendedUntil ? <> <span className="muted small">jusqu’au {S.fmtDate(u.suspendedUntil)}</span></> : null}
             {isMe ? <> <span className="muted small">(c’est toi)</span></> : null}
-            {u.emailNotifications === false ? <> <Pill tone="neutral"><Icon name="bell" /> E-mails coupés</Pill></> : null}
-            {u.emailNotifications === true ? <> <span className="muted small"><Icon name="bell" /> reçoit les notifications par e-mail</span></> : null}
           </p>
         </div>
         <div className="profile-actions">

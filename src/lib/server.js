@@ -44,7 +44,6 @@ export function fromAdminUser(u) {
     counts: u.counts,
     deletion: u.deletion,
     // Notifications importantes aussi envoyées par e-mail (coupables par le Badeur) ; absent = ancienne API.
-    emailNotifications: u.emailNotifications ?? null,
   };
 }
 
