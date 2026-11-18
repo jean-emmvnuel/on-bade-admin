@@ -30,7 +30,7 @@ L'administrateur a **tous les accès** ; chaque action est inscrite au **journal
 | **Back-office** (ce dépôt) | [`jean-emmvnuel/on-bade-admin`](https://github.com/jean-emmvnuel/on-bade-admin) |
 | App mobile | [`jean-emmvnuel/on-bade-mobile`](https://github.com/jean-emmvnuel/on-bade-mobile) |
 
-📐 Comment ils s'articulent : [ARCHITECTURE.md](https://github.com/growthman7/onbad-backend/blob/main/docs/ARCHITECTURE.md) · 🔌 Toutes les routes de l'API : [API.md](https://github.com/growthman7/onbad-backend/blob/main/docs/API.md) (générée depuis le code du serveur).
+📐 Comment ils s'articulent : [ARCHITECTURE.md](https://github.com/growthman7/onbad-backend/blob/main/docs/ARCHITECTURE.md) · 🔌 Toutes les routes de l'API : [API.md](https://github.com/growthman7/onbad-backend/blob/main/docs/API.md) (générée depuis le code du serveur) · 🚀 Mettre en ligne : [DEPLOIEMENT.md](https://github.com/growthman7/onbad-backend/blob/main/docs/DEPLOIEMENT.md).
 
 ## Lancer
 
