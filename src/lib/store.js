@@ -431,10 +431,11 @@ export function announcementReach(audience) {
 }
 export function sendAnnouncement({ title, body, audience }) {
   if (BACKEND) {
-    return api.sendAnnouncement({ title, body, audience }).then(({ announcement: a }) => {
+    // Renvoie le nombre d'appareils qui reçoivent la notification push (null si le serveur ne le dit pas).
+    return api.sendAnnouncement({ title, body, audience }).then(({ announcement: a, pushDevices }) => {
       state.announcements.unshift(server.fromAnnouncement({ ...a, by: { id: state.session.userId } }));
       refreshAudit(); commit();
-      return true;
+      return { pushDevices: typeof pushDevices === 'number' ? pushDevices : null };
     }, (e) => { toast(errorMessage(e, 'Annonce non envoyée.'), 'bad'); return false; });
   }
   const reach = audience === 'all' ? users().filter((u) => u.status === 'active').length : audience === 'verified' ? users().filter((u) => u.verified).length : users().filter((u) => Date.now() - u.lastActiveAt > 7 * D).length;

@@ -159,7 +159,7 @@ export const decideDataRequest = (userId, action, reason) => post(`/admin/data-r
 // ─── Plateforme ───────────────────────────────────────────
 export const getAnnouncements = () => get('/admin/announcements');
 export const getAnnouncementReach = (audience) => get('/admin/announcements/reach', { audience }); // → { reach }
-export const sendAnnouncement = (body) => post('/admin/announcements', body); // { title, body, audience } → { announcement }
+export const sendAnnouncement = (body) => post('/admin/announcements', body); // { title, body, audience } → { announcement, pushDevices }
 export const getSettings = () => get('/admin/settings'); // → { rules, platform, bannedWords }
 export const saveSettings = (patchBody) => patch('/admin/settings', patchBody);
 export const getAudit = (query) => get('/admin/audit', query); // → { actions, total }

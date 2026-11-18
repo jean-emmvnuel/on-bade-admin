@@ -27,7 +27,8 @@ export default function Announcements() {
     const ok = await S.sendAnnouncement({ title: title.trim(), body: body.trim(), audience });
     setSending(false);
     if (ok === false) return;
-    toast('Annonce envoyée 📣');
+    const push = ok?.pushDevices;
+    toast(push == null ? 'Annonce envoyée 📣' : push ? `Annonce envoyée 📣 · notification push vers ${S.fmt(push)} appareil${push > 1 ? 's' : ''}` : 'Annonce envoyée 📣 · aucun appareil abonné aux notifications push');
     setTitle(''); setBody(''); setAudience('all');
   };
 
