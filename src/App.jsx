@@ -24,6 +24,7 @@ import Settings from './views/Settings.jsx';
 import Audit from './views/Audit.jsx';
 import Backlog from './views/Backlog.jsx';
 import Server from './views/Server.jsx';
+import Leaderboard from './views/Leaderboard.jsx';
 
 // Entrées du menu : [clé, chemin, icône, libellé, compteur éventuel].
 const NAV = [
@@ -37,6 +38,7 @@ const NAV = [
   ]],
   ['Communauté', [
     ['users', '/users', 'users', 'Utilisateurs'],
+    ['leaderboard', '/leaderboard', 'trendingUp', 'Classement'],
     ['badges', '/badges', 'badgeCheck', 'Badges vérifiés', () => S.pendingBadges().length],
     ['announcements', '/announcements', 'megaphone', 'Annonces'],
   ]],
@@ -61,6 +63,7 @@ const PAGES = [
   ['/stickers', Stickers, 'stickers'],
   ['/users', Users, 'users'],
   ['/users/:id', UserDetail, 'users'],
+  ['/leaderboard', Leaderboard, 'leaderboard'],
   ['/badges', Badges, 'badges'],
   ['/data', DataRequests, 'data'],
   ['/announcements', Announcements, 'announcements'],

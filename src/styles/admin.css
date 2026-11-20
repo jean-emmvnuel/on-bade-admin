@@ -489,3 +489,14 @@ button.link { background: none; border: 0; padding: 0; font: inherit; font-weigh
 .refusal-tools .check { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
 [data-refusals] .text-cell small { display: block; margin-top: 2px; }
 [data-refusals] .pager { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 12px; }
+
+/* ── Classement (views/Leaderboard.jsx) ── */
+.lb-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.lb-sort { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text-2); }
+.lb-hint { font-size: 13px; }
+.lb-grid { display: grid; gap: 24px; }
+.lb-title { font-size: 16px; margin: 4px 0 10px; }
+.lb-rank { font-size: 16px; text-align: center; width: 40px; }
+.lb-active { color: var(--brand-ink, #b76bff); font-weight: 700; }
+th .lb-active { text-decoration: underline; text-underline-offset: 4px; }
+.lb-tag { color: var(--brand-ink, #b76bff); }
