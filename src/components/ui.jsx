@@ -9,6 +9,7 @@ const nf = (v) => v.toLocaleString('fr-FR');
 
 /** Icône Lucide (tracés statiques de icons-data.js). */
 export const Icon = ({ name, className = '' }) => (
+  // nosemgrep: typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml -- tracés fixes de icons-data.js, jamais de texte d'utilisateur
   <svg className={`i ${className}`.trim()} viewBox="0 0 24 24" aria-hidden="true" dangerouslySetInnerHTML={{ __html: ICONS[name] ?? '' }} />
 );
 
