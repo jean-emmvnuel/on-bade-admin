@@ -505,3 +505,7 @@ th .lb-active { text-decoration: underline; text-underline-offset: 4px; }
 .lb-levels .kpi { text-align: left; cursor: pointer; font: inherit; }
 .lb-levels .kpi.on { border-color: var(--brand-ink, #b76bff); box-shadow: 0 0 0 1px var(--brand-ink, #b76bff) inset; }
 @media (max-width: 1180px) { .lb-levels { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.rt-chart { padding: 16px 18px; }
+.rt-good { color: var(--good, #3ccf7a); font-weight: 700; }
+.rt-ok { color: var(--warn, #ffc93c); font-weight: 600; }
+.rt-bad { color: var(--bad, #ff5a5f); font-weight: 600; }

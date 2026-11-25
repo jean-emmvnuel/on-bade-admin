@@ -25,6 +25,7 @@ import Audit from './views/Audit.jsx';
 import Backlog from './views/Backlog.jsx';
 import Server from './views/Server.jsx';
 import Leaderboard from './views/Leaderboard.jsx';
+import Retention from './views/Retention.jsx';
 
 // Entrées du menu : [clé, chemin, icône, libellé, compteur éventuel].
 const NAV = [
@@ -39,6 +40,7 @@ const NAV = [
   ['Communauté', [
     ['users', '/users', 'users', 'Utilisateurs'],
     ['leaderboard', '/leaderboard', 'trendingUp', 'Classement'],
+    ['retention', '/retention', 'repeat', 'Rétention'],
     ['badges', '/badges', 'badgeCheck', 'Badges vérifiés', () => S.pendingBadges().length],
     ['announcements', '/announcements', 'megaphone', 'Annonces'],
   ]],
@@ -64,6 +66,7 @@ const PAGES = [
   ['/users', Users, 'users'],
   ['/users/:id', UserDetail, 'users'],
   ['/leaderboard', Leaderboard, 'leaderboard'],
+  ['/retention', Retention, 'retention'],
   ['/badges', Badges, 'badges'],
   ['/data', DataRequests, 'data'],
   ['/announcements', Announcements, 'announcements'],

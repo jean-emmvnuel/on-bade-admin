@@ -100,6 +100,8 @@ export const getLeaderboard = ({ days = 7, sort = 'score', limit = 50 } = {}) =>
 export const getFlames = ({ season, limit = 100 } = {}) => get('/admin/flames', { ...(season ? { season } : {}), limit });
 /** BadeScore : nombre de Badeurs par rang, et classement par BadeScore (`level` : index du rang, facultatif). */
 export const getBadeScores = ({ level = '', limit = 100 } = {}) => get('/admin/badescore', { ...(level !== '' ? { level } : {}), limit });
+/** Rétention : actifs, cohortes (J1, J7, J30), profondeur, premier bading, effet des relances. */
+export const getRetention = () => get('/admin/retention');
 /** État du serveur : requêtes, temps de réponse, erreurs, mémoire, base. `range` : 1h, 6h ou 24h. */
 export const getServer = (range) => get('/admin/server', { range });
 /** Journal des refus (4xx), gardé en base 30 jours : { refusals, total, page, keepDays }. */

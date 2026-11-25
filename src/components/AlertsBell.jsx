@@ -9,7 +9,7 @@ import { toast } from '../lib/toast.js';
 import { errorMessage } from '../lib/api.js';
 import { Icon } from './ui.jsx';
 
-const KIND_ICON = { signup: 'userCheck', report: 'flag', autohide: 'eyeOff', badge: 'badgeCheck', deletion: 'database', server: 'activity', database: 'database' };
+const KIND_ICON = { first_bading: 'penLine', signup: 'userCheck', report: 'flag', autohide: 'eyeOff', badge: 'badgeCheck', deletion: 'database', server: 'activity', database: 'database' };
 const PUSH_RESULT = {
   denied: 'Notifications refusées : autorise-les pour ce site dans les réglages du navigateur.',
   unsupported: 'Ce navigateur ne sait pas recevoir le push (sur iPhone : ajoute d’abord le back-office à l’écran d’accueil).',
