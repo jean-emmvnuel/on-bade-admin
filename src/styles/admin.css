@@ -500,3 +500,8 @@ button.link { background: none; border: 0; padding: 0; font: inherit; font-weigh
 .lb-active { color: var(--brand-ink, #b76bff); font-weight: 700; }
 th .lb-active { text-decoration: underline; text-underline-offset: 4px; }
 .lb-tag { color: var(--brand-ink, #b76bff); }
+.lb-tabs { align-self: flex-start; }
+.lb-levels { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.lb-levels .kpi { text-align: left; cursor: pointer; font: inherit; }
+.lb-levels .kpi.on { border-color: var(--brand-ink, #b76bff); box-shadow: 0 0 0 1px var(--brand-ink, #b76bff) inset; }
+@media (max-width: 1180px) { .lb-levels { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

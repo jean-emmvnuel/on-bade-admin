@@ -53,9 +53,142 @@ function demoLeaderboard(days, sort) {
   return { badeurs, hashtags: [...tags.values()].sort((a, b) => b.uses - a.uses).slice(0, 30), demo: true };
 }
 
+const TABS = [['flames', '🔥 Flammes'], ['badescore', 'BadeScore'], ['activity', 'Activité']];
+
 export default function Leaderboard() {
   const ref = useEnter();
-  const [f, set] = useQuery({ days: '7', sort: 'score' });
+  const [f, set] = useQuery({ tab: 'flames', days: '7', sort: 'score', season: '', level: '' });
+  const tab = TABS.some(([k]) => k === f.tab) ? f.tab : 'flames';
+  return (
+    <div className="view" ref={ref}>
+      <PageHead title="Classement" sub="Flammes de la saison, rangs BadeScore, Badeurs les plus actifs et hashtags." />
+      <div className="seg lb-tabs" role="tablist" aria-label="Classement" data-enter>
+        {TABS.map(([k, label]) => <button key={k} role="tab" aria-selected={tab === k} data-tab={k} onClick={() => set({ tab: k })}>{label}</button>)}
+      </div>
+      {tab === 'flames' ? <FlamesBoard f={f} set={set} /> : tab === 'badescore' ? <BadeScoreBoard f={f} set={set} /> : <ActivityBoard f={f} set={set} />}
+    </div>
+  );
+}
+
+/** Chargement / erreur communs. */
+function Pending({ error, onRetry, label }) {
+  return (
+    <div className="empty card" aria-busy={!error}><Icon name={error ? 'alert' : 'clock'} /><h2>{error ? 'Impossible de charger le classement' : label}</h2>
+      {error ? <><p className="muted">{error}</p><button className="btn btn-secondary" onClick={onRetry}>Réessayer</button></> : null}
+    </div>
+  );
+}
+
+/** Flammes : saison (en cours ou passée), résumé, classement par série, records de tous les temps. */
+function FlamesBoard({ f, set }) {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const load = useCallback(() => {
+    setError(null); setData(null);
+    if (!S.BACKEND) { setError('Flammes indisponibles en mode démo (données du serveur uniquement).'); return; }
+    api.getFlames({ season: f.season }).then(setData).catch((e) => setError(errorMessage(e, 'Flammes indisponibles')));
+  }, [f.season]);
+  useEffect(() => { load(); }, [load]);
+  if (!data) return <Pending error={error} onRetry={load} label="Calcul des flammes…" />;
+  const { season, summary } = data;
+  const left = season.length - season.day;
+  return (
+    <>
+      <div className="toolbar card lb-tools" data-enter>
+        <label className="lb-sort">Saison
+          <select data-season value={season.number} onChange={(e) => set({ season: e.target.value })}>
+            {data.seasons.map((s) => <option key={s.number} value={s.number}>Saison {s.number} · {s.startsOn} → {s.endsOn}{s.current ? ' (en cours)' : s.closed ? ' (close)' : ''}</option>)}
+          </select>
+        </label>
+        <span className="muted lb-hint">{season.current ? `Jour ${season.day}/${season.length} · ${left > 0 ? `fin dans ${left} jour${left > 1 ? 's' : ''}` : 'dernier jour'}` : season.closed ? 'Saison close : résultats figés' : 'Saison terminée, clôture à la prochaine tâche planifiée'}</span>
+      </div>
+      <section className="kpis small" data-enter>
+        <div className="kpi card"><span className="kpi-top"><span>🔥</span><span>Actifs aujourd’hui</span></span><b data-kpi="today">{fmt(summary.activeToday)}</b><span className="kpi-sub">flammes gagnées aujourd’hui</span></div>
+        <div className="kpi card"><span className="kpi-top"><Icon name="users" /><span>Participants</span></span><b data-kpi="participants">{fmt(summary.participants)}</b><span className="kpi-sub">au moins 1 jour actif cette saison · {fmt(summary.ranked)} classés</span></div>
+        <div className="kpi card"><span className="kpi-top"><Icon name="trendingUp" /><span>Plus longue série</span></span><b>{fmt(summary.topStreak)}</b><span className="kpi-sub">{season.current ? 'en cours' : 'en fin de saison'}</span></div>
+        <div className="kpi card"><span className="kpi-top"><Icon name="flag" /><span>Meilleur record</span></span><b>{fmt(summary.bestRecord?.record ?? 0)}</b><span className="kpi-sub">{summary.bestRecord ? `@${summary.bestRecord.user.pseudo}` : 'aucun'}</span></div>
+      </section>
+      <div className="lb-grid">
+        <section data-enter>
+          <h2 className="lb-title">Classement de la saison {season.number}</h2>
+          <p className="muted lb-hint">Série en cours, puis jours actifs de la saison, puis le premier arrivé. Comptes suspendus et en cours de suppression exclus.</p>
+          <Table head={['#', 'Badeur', <span key="s" className="lb-active">Flammes</span>, 'Jours actifs', 'Meilleure série (saison)', 'Record', 'Total jours', 'Aujourd’hui']} empty="Personne n’a de flamme sur cette saison.">
+            {data.badeurs.map((b) => (
+              <tr key={b.user.id} data-flame-badeur={b.user.pseudo}>
+                <td className="nowrap lb-rank">{MEDALS[b.rank - 1] ?? b.rank}</td>
+                <td><Link to={`/users/${b.user.id}`}><UserCell user={b.user} /></Link></td>
+                <td className="num lb-active">{fmt(b.streak)} 🔥</td>
+                <td className="num">{fmt(b.seasonDays)}<span className="muted">/{season.length}</span></td>
+                <td className="num">{fmt(b.seasonBest)}</td>
+                <td className="num">{fmt(b.record)}</td>
+                <td className="num">{fmt(b.totalDays)}</td>
+                <td className="num">{season.current ? (b.today ? '✓' : <span className="muted" title="Pas encore publié aujourd’hui : la série tombe à minuit">à faire</span>) : '—'}</td>
+              </tr>
+            ))}
+          </Table>
+        </section>
+        <section data-enter>
+          <h2 className="lb-title">Records de tous les temps</h2>
+          <Table head={['#', 'Badeur', 'Record (jours d’affilée)', 'Jours actifs au total']} empty="Aucune flamme pour l’instant.">
+            {data.records.map((r, i) => (
+              <tr key={r.user.id}>
+                <td className="lb-rank">{MEDALS[i] ?? i + 1}</td>
+                <td><Link to={`/users/${r.user.id}`}><UserCell user={r.user} /></Link></td>
+                <td className="num lb-active">{fmt(r.record)}</td>
+                <td className="num">{fmt(r.totalDays)}</td>
+              </tr>
+            ))}
+          </Table>
+        </section>
+      </div>
+    </>
+  );
+}
+
+/** BadeScore : nombre de Badeurs par rang (cliquable pour filtrer), et classement par BadeScore. */
+function BadeScoreBoard({ f, set }) {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const load = useCallback(() => {
+    setError(null); setData(null);
+    if (!S.BACKEND) { setError('BadeScore indisponible en mode démo (données du serveur uniquement).'); return; }
+    api.getBadeScores({ level: f.level }).then(setData).catch((e) => setError(errorMessage(e, 'BadeScore indisponible')));
+  }, [f.level]);
+  useEffect(() => { load(); }, [load]);
+  if (!data) return <Pending error={error} onRetry={load} label="Calcul des BadeScores…" />;
+  return (
+    <>
+      <section className="lb-levels" data-enter aria-label="Badeurs par rang">
+        {data.levels.map((l) => (
+          <button key={l.index} type="button" className={`kpi card${f.level === String(l.index) ? ' on' : ''}`} data-level={l.index}
+            onClick={() => set({ level: f.level === String(l.index) ? '' : String(l.index) })}>
+            <span className="kpi-top"><span>{l.name}</span></span>
+            <b>{fmt(l.badeurs)}</b>
+            <span className="kpi-sub">dès {fmt(l.min)} points · {data.total ? Math.round((l.badeurs / data.total) * 100) : 0} %</span>
+          </button>
+        ))}
+      </section>
+      <section data-enter>
+        <h2 className="lb-title">Classement par BadeScore{f.level !== '' ? ` · ${data.levels[Number(f.level)]?.name ?? ''}` : ''}</h2>
+        <p className="muted lb-hint">Score cumulé depuis l’inscription (badings signés seulement). {f.level !== '' ? <button className="btn btn-ghost btn-sm" onClick={() => set({ level: '' })}>Tous les rangs</button> : 'Clique sur un rang pour filtrer.'}</p>
+        <Table head={['#', 'Badeur', <span key="s" className="lb-active">BadeScore</span>, 'Rang', 'Prochain rang']} empty="Aucun Badeur à ce rang (score > 0).">
+          {data.badeurs.map((b) => (
+            <tr key={b.user.id} data-score-badeur={b.user.pseudo}>
+              <td className="nowrap lb-rank">{MEDALS[b.rank - 1] ?? b.rank}</td>
+              <td><Link to={`/users/${b.user.id}`}><UserCell user={b.user} /></Link></td>
+              <td className="num lb-active">{fmt(b.score)}</td>
+              <td>{b.level}</td>
+              <td className="muted">{b.nextLevel ? `${b.nextLevel} dans ${fmt(b.next - b.score)} pts` : 'rang maximal'}</td>
+            </tr>
+          ))}
+        </Table>
+      </section>
+    </>
+  );
+}
+
+/** Activité : rires, commentaires, partages… reçus sur une période, et hashtags les plus utilisés. */
+function ActivityBoard({ f, set }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
@@ -79,9 +212,7 @@ export default function Leaderboard() {
 
   const criterion = CRITERIA.find(([k]) => k === f.sort) ?? CRITERIA[0];
   return (
-    <div className="view" ref={ref}>
-      <PageHead title="Classement" sub={`Les Badeurs les plus actifs et les hashtags les plus utilisés${data?.demo ? ' · données d’exemple (mode démo)' : ''}.`}
-        actions={<button className="btn btn-secondary btn-sm" data-export onClick={exportCsv} disabled={!data}><Icon name="download" /> Exporter (CSV)</button>} />
+    <>
 
       <div className="toolbar card lb-tools" data-enter>
         <div className="seg" role="tablist" aria-label="Période">
@@ -92,7 +223,8 @@ export default function Leaderboard() {
             {CRITERIA.map(([k, label]) => <option key={k} value={k}>{label}</option>)}
           </select>
         </label>
-        <span className="muted lb-hint">{criterion[2]}</span>
+        <span className="muted lb-hint">{criterion[2]}{data?.demo ? ' · données d’exemple (mode démo)' : ''}</span>
+        <button className="btn btn-secondary btn-sm" data-export onClick={exportCsv} disabled={!data} style={{ marginLeft: 'auto' }}><Icon name="download" /> Exporter (CSV)</button>
       </div>
 
       {!data ? (
@@ -130,6 +262,6 @@ export default function Leaderboard() {
           </section>
         </div>
       )}
-    </div>
+    </>
   );
 }

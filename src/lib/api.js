@@ -96,6 +96,10 @@ export const requestPasswordReset = (email) => post('/password-reset', { email }
 export const getStats = () => get('/admin/stats');
 /** Classement des Badeurs et hashtags : `days` 7, 30 ou 0 (tout), `sort` score | laughs | comments | shares | rebades | views | badings | commentsWritten. */
 export const getLeaderboard = ({ days = 7, sort = 'score', limit = 50 } = {}) => get('/admin/leaderboard', { days, sort, limit });
+/** Flammes : saison (en cours par défaut, ou `season` = numéro), classement, records, résumé. */
+export const getFlames = ({ season, limit = 100 } = {}) => get('/admin/flames', { ...(season ? { season } : {}), limit });
+/** BadeScore : nombre de Badeurs par rang, et classement par BadeScore (`level` : index du rang, facultatif). */
+export const getBadeScores = ({ level = '', limit = 100 } = {}) => get('/admin/badescore', { ...(level !== '' ? { level } : {}), limit });
 /** État du serveur : requêtes, temps de réponse, erreurs, mémoire, base. `range` : 1h, 6h ou 24h. */
 export const getServer = (range) => get('/admin/server', { range });
 /** Journal des refus (4xx), gardé en base 30 jours : { refusals, total, page, keepDays }. */
