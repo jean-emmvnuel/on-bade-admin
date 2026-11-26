@@ -15,6 +15,8 @@ const tone = (v, good, ok) => (v === null || v === undefined ? '' : v >= good ? 
 
 export const NUDGES = {
   streak: ['🔥 Rappel de série', 'Push à 19 h : « ta série s’éteint à minuit »'],
+  streak_late: ['⏰ Dernier rappel (push)', 'À 21 h : « plus que 3 heures », s’il n’a toujours rien publié'],
+  streak_late_mail: ['⏰ Dernier rappel (e-mail)', 'À 21 h, en même temps que la notification'],
   inactive_push: ['📲 Inactif (push)', 'Après 3 jours sans venir, s’il y a du neuf'],
   inactive_mail: ['✉️ Inactif (e-mail)', 'Après 7 jours, au plus 1 relance par semaine'],
   first_bading: ['✍️ Premier bading', 'Le lendemain de l’inscription, sans bading publié'],
